@@ -1,3 +1,4 @@
+import { FormWrapper } from "@/app/_components";
 import { resetPasswordAction } from "@/app/actions";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
@@ -9,29 +10,33 @@ export default async function ResetPassword(props: {
 }) {
   const searchParams = await props.searchParams;
   return (
-    <form className="flex flex-col w-full max-w-md p-4 gap-2 [&>input]:mb-4">
-      <h1 className="text-2xl font-medium">Reset password</h1>
-      <p className="text-sm text-foreground/60">
-        Please enter your new password below.
-      </p>
-      <Label htmlFor="password">New password</Label>
-      <Input
-        type="password"
-        name="password"
-        placeholder="New password"
-        required
-      />
-      <Label htmlFor="confirmPassword">Confirm password</Label>
-      <Input
-        type="password"
-        name="confirmPassword"
-        placeholder="Confirm password"
-        required
-      />
-      <SubmitButton formAction={resetPasswordAction}>
-        Reset password
-      </SubmitButton>
-      <FormMessage message={searchParams} />
-    </form>
+    <div className=" h-screen w-screen bg-[var(--forms-background-color)] flex flex-col items-center justify-center">
+      <FormWrapper sizes="lg">
+        <form className="flex flex-col w-full max-w-md p-4 gap-2 [&>input]:mb-4">
+          <h1 className="text-2xl font-medium">Reset password</h1>
+          <p className="text-sm text-foreground/60">
+            Please enter your new password below.
+          </p>
+          <Label htmlFor="password">New password</Label>
+          <Input
+            type="password"
+            name="password"
+            placeholder="New password"
+            required
+          />
+          <Label htmlFor="confirmPassword">Confirm password</Label>
+          <Input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm password"
+            required
+          />
+          <SubmitButton formAction={resetPasswordAction}>
+            Reset password
+          </SubmitButton>
+          <FormMessage message={searchParams} />
+        </form>
+      </FormWrapper>
+    </div>
   );
 }

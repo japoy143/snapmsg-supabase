@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,6 +30,11 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --primary-color: #4635b1;
+    --secondary-color: #161616;
+    --forms-background-color: #f4f6ff;
+    --search-background: #d9d9d9;
+    --search-bar-background: #ffffff;
   }
 
   .dark {
@@ -65,5 +71,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "Manrope", sans-serif;
   }
 }
