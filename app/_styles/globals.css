@@ -34,7 +34,12 @@
     --secondary-color: #161616;
     --forms-background-color: #f4f6ff;
     --search-background: #d9d9d9;
+    --cards-background-color: #ffffff;
     --search-bar-background: #ffffff;
+    --dashboard-background-color: #eeeeee;
+    --pastel-red-color: #ffe3e3;
+    --pastel-green-color: #c9e9d2;
+    --pastel-yellow-color: #fef9f2;
   }
 
   .dark {

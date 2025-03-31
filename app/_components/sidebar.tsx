@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import LogoHeader from "./logo-header";
-import DashboardLinks from "./dashboard_links";
+import DashboardLinks from "./dashboard/dashboard_links";
 import { Stack, Tags, Response, ChatScripts } from "../assets/svgs";
 import { usePathname } from "next/navigation";
 

@@ -7,6 +7,7 @@ import SideBar from "../_components/sidebar";
 import "../_styles/globals.css";
 import Link from "next/link";
 import UserEmail from "./email";
+import { signOutAction } from "../actions";
 
 export default function RootLayout({
   children,
@@ -28,12 +29,14 @@ export default function RootLayout({
                 <UserEmail />
               </div>
 
-              <Link
-                href={""}
-                className="w-full py-2 bg-white rounded text-center text-[var(--secondary-color)]"
-              >
-                Logout
-              </Link>
+              <form action={signOutAction}>
+                <button
+                  type="submit"
+                  className="w-full py-2 bg-white rounded text-center text-[var(--secondary-color)]"
+                >
+                  Logout
+                </button>
+              </form>
             </div>
           </div>
           <div className="col-span-4 lg:col-span-5 ">{children}</div>

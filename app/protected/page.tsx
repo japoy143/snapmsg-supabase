@@ -3,6 +3,11 @@ import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import SearchBar from "../_components/search-bar";
+import DashboardCards from "../_components/dashboard/dashboard_cards";
+import DashboardCard from "../_components/dashboard/dashboard_card";
+import DashboardCardsWrapper from "../_components/dashboard/dashboard_cards_wrapper";
+import DashboardHeadingIcon from "../_components/dashboard/dashboard_heading_icon";
+import { ChatScripts, Tags, Response } from "../assets/svgs";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -16,9 +21,55 @@ export default async function ProtectedPage() {
   }
 
   return (
-    <div className="flex-1 w-full flex flex-col gap-4">
-      <SearchBar name="Dashboard" />
-      Protected
+    <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)] ">
+      <SearchBar name=" Dashboard" />
+      <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
+        <DashboardCardsWrapper>
+          <DashboardCards>
+            <DashboardHeadingIcon
+              color="bg-[var(--pastel-red-color)]"
+              icon={<ChatScripts className="size-6" />}
+              headingName="Chat Scripts"
+            />
+            <h1 className=" text-center text-4xl font-medium ">10</h1>
+
+            <div className=" flex-1 flex items-end justify-end h-full w-full">
+              <p className=" text-gray-400 text-xs">Last updated 7hrs ago</p>
+            </div>
+          </DashboardCards>
+
+          <DashboardCards>
+            <DashboardHeadingIcon
+              color="bg-[var(--pastel-yellow-color)]"
+              icon={<Tags className="size-6" />}
+              headingName="Total Tags"
+            />
+
+            <h1 className=" text-center text-4xl font-medium ">20</h1>
+
+            <div className=" flex-1 flex items-end justify-end h-full w-full">
+              <p className=" text-gray-400 text-xs">Last updated 7hrs ago</p>
+            </div>
+          </DashboardCards>
+
+          <DashboardCards>
+            <DashboardHeadingIcon
+              color="bg-[var(--pastel-green-color)] "
+              icon={<Response className="size-6" />}
+              headingName="Total Response"
+            />
+            <h1 className=" text-center text-4xl font-medium ">40</h1>
+
+            <div className=" flex-1 flex items-end justify-end h-full w-full">
+              <p className=" text-gray-400 text-xs">Last updated 7hrs ago</p>
+            </div>
+          </DashboardCards>
+        </DashboardCardsWrapper>
+
+        <DashboardCard>
+          <p>Protected</p>
+        </DashboardCard>
+      </div>
     </div>
   );
 }
