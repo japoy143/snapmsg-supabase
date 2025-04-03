@@ -1,9 +1,5 @@
 import React from "react";
 
-interface svgProps {
-  className: string;
-  fill?: string;
-}
 
 export default function Logo({ className, fill = "none" }: svgProps) {
   return (

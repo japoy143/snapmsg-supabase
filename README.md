@@ -66,7 +66,7 @@ If you wish to just develop locally and not deploy to Vercel, [follow the steps 
    pnpm create next-app --example with-supabase with-supabase-app
    ```
 
-3. Use `cd` to change into the app's directory
+3. Use `cd` to change into the app's 
 
    ```bash
    cd with-supabase-app

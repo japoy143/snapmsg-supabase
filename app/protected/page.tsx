@@ -1,12 +1,12 @@
-import FetchDataSteps from "@/components/tutorial/fetch-data-steps";
 import { createClient } from "@/utils/supabase/server";
-import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import SearchBar from "../_components/search-bar";
-import DashboardCards from "../_components/dashboard/dashboard_cards";
-import DashboardCard from "../_components/dashboard/dashboard_card";
-import DashboardCardsWrapper from "../_components/dashboard/dashboard_cards_wrapper";
-import DashboardHeadingIcon from "../_components/dashboard/dashboard_heading_icon";
+import {
+  DashboardCard,
+  DashboardCardsWrapper,
+  DashboardHeadingIcon,
+  DashboardCards,
+} from "../_components/dashboard";
 import { ChatScripts, Tags, Response } from "../assets/svgs";
 
 export default async function ProtectedPage() {
