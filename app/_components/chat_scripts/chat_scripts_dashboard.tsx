@@ -64,6 +64,7 @@ export default function ChatScriptsDashboard({
             <div className="h-1/3 flex flex-col">
               <h1 className="font-medium">Associate Tag</h1>
               <select
+                name="associated"
                 className="border-2 border-black/60 rounded px-2"
                 value={selectedTag ? JSON.stringify(selectedTag) : ""}
                 onChange={(e) => associateTag(e.target.value)}

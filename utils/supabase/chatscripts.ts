@@ -3,6 +3,21 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { ChatScriptsSchema } from "../../app/_lib/definitions";
 
+//get all chat_scripts
+export async function getAllChatScripts(): Promise<any[] | null> {
+  const supabase = await createClient();
+  // const {
+  //   data: { user },
+  // } = await supabase.auth.getUser();
+
+  const { data: scripts } = await supabase.from("chat_scripts").select();
+
+  return scripts?.map((item) => item) ?? [];
+}
+
+/*
+ACTIONS
+*/
 export async function addScript(state: any, formData: FormData) {
   const validateResult = ChatScriptsSchema.safeParse({
     scripts: formData.get("scripts"),
@@ -36,4 +51,6 @@ export async function addScript(state: any, formData: FormData) {
   }
 
   revalidatePath("/protected/chat-scripts");
+  formData.delete("scripts");
+  formData.delete("associated_tags");
 }
