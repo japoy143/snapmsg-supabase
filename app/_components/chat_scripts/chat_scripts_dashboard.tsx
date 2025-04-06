@@ -1,23 +1,39 @@
 "use client";
-import React, { useActionState, useState } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import DashboardButton from "../dashboard/dashboard_button";
 import DashboardCards from "../dashboard/dashboard_cards";
 import DashboardCardsWrapper from "../dashboard/dashboard_cards_wrapper";
-import { addScript } from "@/utils/supabase/chatscripts";
+import { addScript, getAllChatScripts } from "@/utils/supabase/chatscripts";
 import FormErrors from "../formerrors";
+import { getAllTags } from "@/utils/supabase/tags";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
-export default function ChatScriptsDashboard({
-  allTags,
-}: {
-  allTags: TagType[] | null;
-}) {
-  const [script, setScript] = useState<string>("");
-  const [selectedTag, setSelectedTag] = useState<TagType>();
-  const [tags, setTags] = useState<TagType[] | null>(allTags);
-  const [associatedTags, setAssociatedTags] = useState<TagType[]>([]);
-
+export default function ChatScriptsDashboard() {
   //actions
   const [state, action] = useActionState(addScript, null);
+  //states
+  const [script, setScript] = useState<string>("");
+  const [selectedTag, setSelectedTag] = useState<TagType | undefined>();
+  const [associatedTags, setAssociatedTags] = useState<TagType[]>([]);
+
+  const {
+    isPending: isTagPending,
+    isError: isTagError,
+    data: tagsData,
+    error: tagError,
+  } = useQuery({
+    queryKey: ["taglist"],
+    queryFn: getAllTags,
+  });
+
+  if (isTagPending) {
+    <div>...Loading</div>;
+  }
+
+  if (isTagError) {
+    <div>{tagError.message}</div>;
+  }
 
   function associateTag(tag: string) {
     //from json
@@ -41,6 +57,19 @@ export default function ChatScriptsDashboard({
     setScript("");
   }
 
+  //Toast
+  useEffect(() => {
+    if (!state?.success) return;
+
+    toast("Successfully added new scripts", {
+      type: "success",
+    });
+
+    //clear states
+    setScript("");
+    setSelectedTag(undefined);
+    setAssociatedTags([]);
+  }, [state?.success]);
   return (
     <DashboardCardsWrapper isCards="card">
       <DashboardCards>
@@ -56,13 +85,13 @@ export default function ChatScriptsDashboard({
               ></textarea>
             </div>
             <FormErrors
-              error={state?.error.scripts && state.error.scripts[0]}
+              error={state?.errorField?.scripts && state.errorField.scripts[0]}
             />
           </div>
 
           <div className="w-full h-full flex flex-col gap-2">
             <div className="h-1/3 flex flex-col">
-              <h1 className="font-medium">Associate Tag</h1>
+              <h1 className="font-medium">Associate Tag </h1>
               <select
                 name="associated"
                 className="border-2 border-black/60 rounded px-2"
@@ -72,8 +101,8 @@ export default function ChatScriptsDashboard({
                 <option value="" disabled>
                   select tags
                 </option>
-                {tags &&
-                  tags.map((item) => (
+                {tagsData &&
+                  tagsData.map((item) => (
                     <option key={item.id} value={JSON.stringify(item)}>
                       {item.tagname}
                     </option>
@@ -81,7 +110,8 @@ export default function ChatScriptsDashboard({
               </select>
               <FormErrors
                 error={
-                  state?.error.associated_tags && state.error.associated_tags[0]
+                  state?.errorField?.associated_tags &&
+                  state.errorField.associated_tags[0]
                 }
               />
             </div>

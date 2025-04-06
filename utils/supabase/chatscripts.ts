@@ -2,15 +2,16 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { ChatScriptsSchema } from "../../app/_lib/definitions";
+import { error } from "console";
 
 //get all chat_scripts
 export async function getAllChatScripts(): Promise<any[] | null> {
   const supabase = await createClient();
-  // const {
-  //   data: { user },
-  // } = await supabase.auth.getUser();
 
-  const { data: scripts } = await supabase.from("chat_scripts").select();
+  const { data: scripts } = await supabase
+    .from("chat_scripts")
+    .select()
+    .order("created_at", { ascending: false });
 
   return scripts?.map((item) => item) ?? [];
 }
@@ -18,6 +19,8 @@ export async function getAllChatScripts(): Promise<any[] | null> {
 /*
 ACTIONS
 */
+
+//ADD
 export async function addScript(state: any, formData: FormData) {
   const validateResult = ChatScriptsSchema.safeParse({
     scripts: formData.get("scripts"),
@@ -25,7 +28,7 @@ export async function addScript(state: any, formData: FormData) {
   });
 
   if (!validateResult.success) {
-    return { error: validateResult.error?.flatten().fieldErrors };
+    return { errorField: validateResult.error?.flatten().fieldErrors };
   }
 
   //get authenticated user
@@ -51,6 +54,37 @@ export async function addScript(state: any, formData: FormData) {
   }
 
   revalidatePath("/protected/chat-scripts");
-  formData.delete("scripts");
-  formData.delete("associated_tags");
+  return { success: true };
+}
+
+//DELETE
+export async function deleteChatScripts(id: number) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("chat_scripts").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/protected/chat-scripts");
+  return { success: true };
+}
+
+//UPDATE
+export async function updateChatScripts(
+  id: number,
+  script: string,
+  associated_tags_id: string
+) {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("chat_scripts")
+    .update({ scripts: script, associated_tags_id: associated_tags_id })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return { success: true };
 }

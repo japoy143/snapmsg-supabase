@@ -6,7 +6,7 @@ export default function DashboardCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className=" flex-1 w-full h-full bg-[var(--cards-background-color)] py-2 px-4 rounded-md">
+    <div className=" flex-1 w-full h-full  bg-[var(--cards-background-color)] py-2 px-4 rounded-md overflow-y-auto">
       {children}
     </div>
   );

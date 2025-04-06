@@ -1,5 +1,5 @@
 "use client";
-import React, { useActionState, useState } from "react";
+import React, { useActionState, useEffect } from "react";
 import {
   DashboardCardsWrapper,
   DashboardCards,
@@ -7,16 +7,38 @@ import {
   DashboardButton,
 } from "../dashboard";
 import { Tags } from "@/app/assets/svgs";
-import { addTags } from "@/utils/supabase/tags";
+import { addTags, getLatestTags } from "@/utils/supabase/tags";
 import FormErrors from "../formerrors";
+import { useQuery } from "@tanstack/react-query";
+import { error } from "console";
+import { toast } from "react-toastify";
 
-export default function TagDashboard({
-  allTags,
-}: {
-  allTags: TagType[] | null;
-}) {
+export default function TagDashboard() {
   const [state, action] = useActionState(addTags, null);
-  const [tags, setTags] = useState<TagType[] | null>(allTags);
+  const {
+    isPending: isTagsPending,
+    isError: isTagsError,
+    data: tagLatest,
+    error: tagError,
+  } = useQuery({
+    queryKey: ["taglatest"],
+    queryFn: () => getLatestTags(5),
+  });
+
+  if (isTagsPending) {
+    return <div>...Loading</div>;
+  }
+
+  if (isTagsError) {
+    <div>{tagError.message}</div>;
+  }
+
+  //Toast handler
+  useEffect(() => {
+    if (state?.success) {
+      toast("Successfully added", { type: "success" });
+    }
+  }, [state?.success]);
 
   return (
     <>
@@ -29,8 +51,8 @@ export default function TagDashboard({
           />
 
           <div className=" flex flex-wrap gap-1 mt-4">
-            {tags &&
-              tags.map((tag) => (
+            {tagLatest &&
+              tagLatest.map((tag) => (
                 <p
                   key={tag.id}
                   className="bg-[var(--pastel-yellow-color)] p-2 rounded-lg"
@@ -54,12 +76,16 @@ export default function TagDashboard({
               name="tagname"
               placeholder="tagname"
             />
-            {state?.error.tagname && (
-              <FormErrors error={state.error.tagname[0]} />
-            )}
+            <div className=" w-full text-right">
+              {state?.errorField?.tagname && (
+                <FormErrors error={state.errorField.tagname[0]} />
+              )}
+            </div>
           </form>
           <h1 className="font-medium">Recently Added Tags</h1>
-          <div className=" flex-1 w-full h-full border-2 border-black/60 rounded-lg "></div>
+          <div className=" flex-1 w-full h-full border-2 border-black/60 rounded-lg p-2 ">
+            {tagLatest && tagLatest[0]?.tagname}
+          </div>
           <div className=" flex items-center justify-end space-x-4 mt-2">
             <DashboardButton
               color="black"

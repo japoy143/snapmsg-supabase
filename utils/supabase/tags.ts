@@ -2,10 +2,27 @@
 import { TagSchema } from "@/app/_lib/definitions";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { toast } from "react-toastify";
 
-export async function getAllTags(): Promise<string[] | null> {
+export async function getAllTags(): Promise<TagType[] | null> {
   const supabase = await createClient(); // No need for `await` here
-  const { data: tags } = await supabase.from("tags").select();
+  const { data: tags } = await supabase
+    .from("tags")
+    .select()
+    .order("created_at", { ascending: false });
+
+  return tags?.map((tag) => tag) ?? [];
+}
+
+export async function getLatestTags(
+  count: number = 6
+): Promise<TagType[] | null> {
+  const supabase = await createClient();
+  const { data: tags } = await supabase
+    .from("tags")
+    .select()
+    .order("created_at", { ascending: false })
+    .limit(count);
 
   return tags?.map((tag) => tag) ?? [];
 }
@@ -20,7 +37,7 @@ export async function addTags(state: any, formData: FormData) {
   });
 
   if (!validateResult.success) {
-    return { error: validateResult.error.flatten().fieldErrors };
+    return { errorField: validateResult.error.flatten().fieldErrors };
   }
 
   const supabase = await createClient();
@@ -40,6 +57,18 @@ export async function addTags(state: any, formData: FormData) {
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  revalidatePath("/protected/tags");
+  return { success: true };
+}
+
+export async function deleteTag(id: number) {
+  const supabase = await createClient();
+  const { error } = await supabase.from("tags").delete().eq("id", id);
+
+  if (error) {
+    throw new Error(error?.message);
   }
 
   revalidatePath("/protected/tags");
