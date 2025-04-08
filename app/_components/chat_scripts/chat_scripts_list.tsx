@@ -6,8 +6,9 @@ import {
 } from "@/utils/supabase/chatscripts";
 import { getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import EventEmitter from "@/utils/EventEmitter";
 
 export default function ChatScriptsList() {
   const [scriptId, setScriptId] = useState<number | undefined>();
@@ -58,6 +59,19 @@ export default function ChatScriptsList() {
     }
   }
 
+  function getAllAssociatedTags(ids: string) {
+    try {
+      const tagIds: number[] = JSON.parse(ids);
+
+      return tagIds
+        .map((id) => tagsData?.find((tag) => tag.id === id))
+        .filter((tag): tag is TagType => tag !== undefined) // removes undefined ensures only true or false
+        .map((item) => item); // only tagname
+    } catch (e) {
+      return [];
+    }
+  }
+
   function openActionOptions(id: number) {
     setScriptId(id);
   }
@@ -73,12 +87,34 @@ export default function ChatScriptsList() {
       toast("Successfully deleted script", {
         type: "success",
       });
+      EventEmitter.emit("clear");
     } else {
       toast("Failed deletion  of script", {
         type: "error",
       });
     }
   }
+
+  function showUpdate(id: number, scriptname: string, associated_tag: string) {
+    const allTags = getAllAssociatedTags(associated_tag);
+    EventEmitter.emit("update", {
+      id: id,
+      scriptname: scriptname,
+      associated_tag: allTags,
+    });
+  }
+
+  useEffect(() => {
+    function clear() {
+      setScriptId(undefined);
+    }
+
+    const listener = EventEmitter.addListener("clear", clear);
+
+    return () => {
+      EventEmitter.removeListener("clear", clear);
+    };
+  }, []);
 
   return (
     <>
@@ -111,7 +147,16 @@ export default function ChatScriptsList() {
                 >
                   x
                 </span>
-                <button className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start">
+                <button
+                  onClick={() =>
+                    showUpdate(
+                      script.id,
+                      script.scripts,
+                      script.associated_tags_id
+                    )
+                  }
+                  className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start"
+                >
                   Update
                 </button>
                 <button

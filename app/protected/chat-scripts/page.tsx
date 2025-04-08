@@ -5,6 +5,7 @@ import React from "react";
 import ChatScriptsList from "../../_components/chat_scripts/chat_scripts_list";
 import {
   dehydrate,
+  hydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
@@ -13,6 +14,7 @@ import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 
 export default async function page() {
   const queryClient = new QueryClient();
+
   await queryClient.prefetchQuery({
     queryKey: ["taglist"],
     queryFn: getAllTags,

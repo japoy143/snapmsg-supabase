@@ -3,11 +3,12 @@ import React, { useActionState, useEffect, useState } from "react";
 import DashboardButton from "../dashboard/dashboard_button";
 import DashboardCards from "../dashboard/dashboard_cards";
 import DashboardCardsWrapper from "../dashboard/dashboard_cards_wrapper";
-import { addScript, getAllChatScripts } from "@/utils/supabase/chatscripts";
+import { addScript, updateChatScripts } from "@/utils/supabase/chatscripts";
 import FormErrors from "../formerrors";
 import { getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import EventEmitter from "@/utils/EventEmitter";
 
 export default function ChatScriptsDashboard() {
   //actions
@@ -16,6 +17,8 @@ export default function ChatScriptsDashboard() {
   const [script, setScript] = useState<string>("");
   const [selectedTag, setSelectedTag] = useState<TagType | undefined>();
   const [associatedTags, setAssociatedTags] = useState<TagType[]>([]);
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  const [updateId, setUpdateId] = useState<number>(0);
 
   const {
     isPending: isTagPending,
@@ -53,22 +56,48 @@ export default function ChatScriptsDashboard() {
   }
 
   function clear() {
-    setAssociatedTags([]);
     setScript("");
+    setSelectedTag(undefined);
+    setAssociatedTags([]);
+    setUpdateId(0);
+    setIsUpdate(false);
+  }
+
+  async function update(
+    id: number,
+    script: string,
+    associated_tags_id: string
+  ) {
+    const { success } = await updateChatScripts(id, script, associated_tags_id);
+
+    if (success) {
+      toast("Successfully updated script", { type: "success" });
+      clear();
+      EventEmitter.emit("clear");
+    } else {
+      toast("Failed update script", { type: "error" });
+    }
   }
 
   //Toast
   useEffect(() => {
-    if (!state?.success) return;
+    //set update state
+    const sample = (data: any) => {
+      setIsUpdate(true);
+      setScript(data.scriptname);
+      setAssociatedTags(data.associated_tag);
+      setUpdateId(data.id);
+    };
 
+    const listener = EventEmitter.addListener("update", sample);
+
+    if (!state?.success) return;
     toast("Successfully added new scripts", {
       type: "success",
     });
 
     //clear states
-    setScript("");
-    setSelectedTag(undefined);
-    setAssociatedTags([]);
+    clear();
   }, [state?.success]);
   return (
     <DashboardCardsWrapper isCards="card">
@@ -141,11 +170,26 @@ export default function ChatScriptsDashboard() {
                 buttonName="Cancel"
                 action={clear}
               />
-              <DashboardButton
-                buttonName="Save"
-                type="submit"
-                action={() => {}}
-              />
+
+              {isUpdate ? (
+                <DashboardButton
+                  buttonName="Update"
+                  type="custom"
+                  action={() =>
+                    update(
+                      updateId,
+                      script,
+                      JSON.stringify(associatedTags.map((item) => item.id))
+                    )
+                  }
+                />
+              ) : (
+                <DashboardButton
+                  buttonName="Save"
+                  type="submit"
+                  action={() => {}}
+                />
+              )}
             </div>
           </div>
         </form>

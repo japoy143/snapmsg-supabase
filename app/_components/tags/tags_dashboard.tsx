@@ -10,11 +10,18 @@ import { Tags } from "@/app/assets/svgs";
 import { addTags, getLatestTags } from "@/utils/supabase/tags";
 import FormErrors from "../formerrors";
 import { useQuery } from "@tanstack/react-query";
-import { error } from "console";
 import { toast } from "react-toastify";
 
 export default function TagDashboard() {
   const [state, action] = useActionState(addTags, null);
+
+  //Toast handler
+  useEffect(() => {
+    if (state?.success) {
+      toast("Successfully added", { type: "success" });
+    }
+  }, [state?.success]);
+
   const {
     isPending: isTagsPending,
     isError: isTagsError,
@@ -32,13 +39,6 @@ export default function TagDashboard() {
   if (isTagsError) {
     <div>{tagError.message}</div>;
   }
-
-  //Toast handler
-  useEffect(() => {
-    if (state?.success) {
-      toast("Successfully added", { type: "success" });
-    }
-  }, [state?.success]);
 
   return (
     <>

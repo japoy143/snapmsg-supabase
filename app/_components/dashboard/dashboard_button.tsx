@@ -18,12 +18,12 @@ export default function DashboardButton({
   return (
     <>
       {type === "custom" ? (
-        <button
+        <div
           onClick={action}
-          className={`p-2 ${color === "purple" ? "bg-[var(--primary-color)]" : "bg-[var(--secondary-color)]"} text-white rounded`}
+          className={`p-2 ${color === "purple" ? "bg-[var(--primary-color)]" : "bg-[var(--secondary-color)]"} text-white rounded cursor-pointer`}
         >
           {buttonName}
-        </button>
+        </div>
       ) : (
         <button
           form={formId}

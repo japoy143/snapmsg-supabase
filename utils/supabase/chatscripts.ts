@@ -86,5 +86,6 @@ export async function updateChatScripts(
     throw new Error(error.message);
   }
 
+  revalidatePath("/protected/chat-scripts");
   return { success: true };
 }
