@@ -11,7 +11,8 @@ export default async function page() {
         <ResponseDashboard />
 
         <DashboardCard>
-          <p>Protected</p>
+          <h1 className=" font-medium">Sample Response</h1>
+          <div className=" border-2 border-black/60 rounded flex-1 w-full h-[400px]"></div>
         </DashboardCard>
       </div>
     </div>
