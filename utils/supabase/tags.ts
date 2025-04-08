@@ -30,7 +30,8 @@ export async function getLatestTags(
 /*
 ACTIONS
 */
-//add tags
+
+//ADD TAGS
 export async function addTags(state: any, formData: FormData) {
   const validateResult = TagSchema.safeParse({
     tagname: formData.get("tagname"),
@@ -63,6 +64,24 @@ export async function addTags(state: any, formData: FormData) {
   return { success: true };
 }
 
+//UPDATE TAG
+export async function updateTag(id: number, tagname: string) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("tags")
+    .update({ tagname: tagname })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/protected/tags");
+  return { success: true };
+}
+
+//DELETE TAGw
 export async function deleteTag(id: number) {
   const supabase = await createClient();
   const { error } = await supabase.from("tags").delete().eq("id", id);

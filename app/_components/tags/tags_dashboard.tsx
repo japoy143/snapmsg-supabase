@@ -1,5 +1,5 @@
 "use client";
-import React, { useActionState, useEffect } from "react";
+import React, { useActionState, useEffect, useState } from "react";
 import {
   DashboardCardsWrapper,
   DashboardCards,
@@ -7,20 +7,34 @@ import {
   DashboardButton,
 } from "../dashboard";
 import { Tags } from "@/app/assets/svgs";
-import { addTags, getLatestTags } from "@/utils/supabase/tags";
+import { addTags, getLatestTags, updateTag } from "@/utils/supabase/tags";
 import FormErrors from "../formerrors";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import EventEmitter from "@/utils/EventEmitter";
 
 export default function TagDashboard() {
   const [state, action] = useActionState(addTags, null);
+  const [tagname, setTagname] = useState<string>("");
+  const [isUpdate, setIsUpdate] = useState<boolean>(false);
+  const [tagId, setTagId] = useState<number>(0);
 
-  //Toast handler
-  useEffect(() => {
-    if (state?.success) {
-      toast("Successfully added", { type: "success" });
+  function clear() {
+    setTagname("");
+    setIsUpdate(false);
+    setTagId(0);
+  }
+
+  async function update(id: number, tag: string) {
+    const { success } = await updateTag(id, tag);
+
+    if (success) {
+      toast("Successfully updated tag", { type: "success" });
+      clear();
+    } else {
+      toast("Failed to update tag", { type: "error" });
     }
-  }, [state?.success]);
+  }
 
   const {
     isPending: isTagsPending,
@@ -40,6 +54,21 @@ export default function TagDashboard() {
     <div>{tagError.message}</div>;
   }
 
+  //Toast handler
+  useEffect(() => {
+    function updateState(data: any) {
+      setTagname(data.tag.tagname);
+      setIsUpdate(true);
+      setTagId(data.tag.id);
+    }
+
+    const listener = EventEmitter.addListener("updateTag", updateState);
+
+    if (state?.success) {
+      toast("Successfully added", { type: "success" });
+      clear();
+    }
+  }, [state?.success]);
   return (
     <>
       <DashboardCardsWrapper>
@@ -73,8 +102,10 @@ export default function TagDashboard() {
             <input
               type="text"
               className=" w-full h-full pl-2 "
+              value={tagname}
               name="tagname"
               placeholder="tagname"
+              onChange={(e) => setTagname(e.target.value)}
             />
             <div className=" w-full text-right">
               {state?.errorField?.tagname && (
@@ -92,12 +123,21 @@ export default function TagDashboard() {
               buttonName="Cancel"
               action={() => {}}
             />
-            <DashboardButton
-              buttonName="Save"
-              type="submit"
-              formId="formId"
-              action={() => {}}
-            />
+            {isUpdate ? (
+              <DashboardButton
+                buttonName="Update"
+                type="custom"
+                formId="formId"
+                action={() => update(tagId, tagname)}
+              />
+            ) : (
+              <DashboardButton
+                buttonName="Save"
+                type="submit"
+                formId="formId"
+                action={() => {}}
+              />
+            )}
           </div>
         </DashboardCards>
       </DashboardCardsWrapper>

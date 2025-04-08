@@ -1,8 +1,9 @@
 "use client";
 import ActionsMenu from "@/app/assets/svgs/actionsmenu";
+import EventEmitter from "@/utils/EventEmitter";
 import { deleteTag, getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 export default function TagList() {
   const [scriptId, setScriptId] = useState<number | null>();
@@ -46,6 +47,10 @@ export default function TagList() {
     setScriptId(undefined);
   }
 
+  function updateTag(tag: TagType) {
+    EventEmitter.emit("updateTag", { tag });
+  }
+
   return (
     <>
       {tagsData &&
@@ -79,7 +84,10 @@ export default function TagList() {
                 >
                   x
                 </span>
-                <button className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start">
+                <button
+                  onClick={() => updateTag(tag)}
+                  className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start"
+                >
                   Update
                 </button>
                 <button
