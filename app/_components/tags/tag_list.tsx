@@ -3,11 +3,13 @@ import ActionsMenu from "@/app/assets/svgs/actionsmenu";
 import EventEmitter from "@/utils/EventEmitter";
 import { deleteTag, getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 export default function TagList() {
   const [scriptId, setScriptId] = useState<number | null>();
-
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search");
   const {
     isPending: isTagsPending,
     isError: isTagsError,
@@ -66,7 +68,7 @@ export default function TagList() {
               10
             </div>
             <div className="  col-span-2 flex justify-between p-2">
-              <h2>Respond To</h2>
+              <h2>Respond To {search}</h2>
               <div
                 className=" cursor-pointer"
                 onClick={() => openActionOptions(tag.id)}

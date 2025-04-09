@@ -1,6 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Search } from "../assets/svgs";
+import { useRouter } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 
 interface SearchBar {
   name: string;
@@ -11,7 +13,20 @@ export default function SearchBar({
   name,
   isSearchVisible = "shown",
 }: SearchBar) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
 
   useEffect(() => {
     console.log(search);
@@ -32,7 +47,11 @@ export default function SearchBar({
               id="search"
               name="search"
               placeholder=" search here"
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) =>
+                router.push(
+                  pathname + "?" + createQueryString("search", e.target.value)
+                )
+              }
               className="focus:ring-0  focus:ring-transparent focus:outline-none py-1"
             />
             <Search className="size-6" />
