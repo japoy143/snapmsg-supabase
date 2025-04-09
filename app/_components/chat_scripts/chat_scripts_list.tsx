@@ -9,9 +9,12 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
+import { useSearchParams } from "next/navigation";
 
 export default function ChatScriptsList() {
   const [scriptId, setScriptId] = useState<number | undefined>();
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search")?.toLowerCase() ?? "";
 
   const {
     isPending: isTagPending,
@@ -119,56 +122,60 @@ export default function ChatScriptsList() {
   return (
     <>
       {scriptsData &&
-        scriptsData.map((script: ChatScriptsType) => (
-          <div
-            key={script.id}
-            className="relative w-full  grid grid-cols-7  text-left border-2 border-black/60 rounded-md  mb-2"
-          >
-            <div className=" col-span-3 h-[140px] p-2 border-r-2 border-black/60 ">
-              <p>{script.scripts}</p>
-            </div>
-            <div className=" col-span-2 flex flex-wrap space-x-2 p-2 border-r-2 border-black/60">
-              {showAllAssociatedTags(script.associated_tags_id)}
-            </div>
-            <div className="  col-span-2 flex justify-between p-2">
-              <h2>Respond To</h2>
-              <div
-                className=" cursor-pointer"
-                onClick={() => openActionOptions(script.id)}
-              >
-                <ActionsMenu className={"size-6"} />
+        scriptsData
+          .filter((script: ChatScriptsType) =>
+            script.scripts.toLowerCase().includes(search)
+          )
+          .map((script: ChatScriptsType) => (
+            <div
+              key={script.id}
+              className="relative w-full  grid grid-cols-7  text-left border-2 border-black/60 rounded-md  mb-2"
+            >
+              <div className=" col-span-3 h-[140px] p-2 border-r-2 border-black/60 ">
+                <p>{script.scripts}</p>
               </div>
-            </div>
-            {script.id === scriptId && (
-              <div className="z-50  font-medium flex flex-col items-start justify-start px-6 absolute  pb-4 space-y-2 w-[210px] right-0 top-10 rounded bg-slate-50 shadow-xl ">
-                <span
-                  className=" cursor-pointer text-right w-full "
-                  onClick={() => closeActionsOptions()}
-                >
-                  x
-                </span>
-                <button
-                  onClick={() =>
-                    showUpdate(
-                      script.id,
-                      script.scripts,
-                      script.associated_tags_id
-                    )
-                  }
-                  className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start"
-                >
-                  Update
-                </button>
-                <button
-                  className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start"
-                  onClick={() => deleteScript(script.id)}
-                >
-                  Delete
-                </button>
+              <div className=" col-span-2 flex flex-wrap space-x-2 p-2 border-r-2 border-black/60">
+                {showAllAssociatedTags(script.associated_tags_id)}
               </div>
-            )}
-          </div>
-        ))}
+              <div className="  col-span-2 flex justify-between p-2">
+                <h2>Respond To</h2>
+                <div
+                  className=" cursor-pointer"
+                  onClick={() => openActionOptions(script.id)}
+                >
+                  <ActionsMenu className={"size-6"} />
+                </div>
+              </div>
+              {script.id === scriptId && (
+                <div className="z-50  font-medium flex flex-col items-start justify-start px-6 absolute  pb-4 space-y-2 w-[210px] right-0 top-10 rounded bg-slate-50 shadow-xl ">
+                  <span
+                    className=" cursor-pointer text-right w-full "
+                    onClick={() => closeActionsOptions()}
+                  >
+                    x
+                  </span>
+                  <button
+                    onClick={() =>
+                      showUpdate(
+                        script.id,
+                        script.scripts,
+                        script.associated_tags_id
+                      )
+                    }
+                    className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start"
+                  >
+                    Update
+                  </button>
+                  <button
+                    className=" hover:border-b-2 hover:border-[var(--primary-color)] w-full text-start"
+                    onClick={() => deleteScript(script.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
     </>
   );
 }
