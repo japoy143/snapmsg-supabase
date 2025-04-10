@@ -8,6 +8,7 @@ import {
   DashboardCards,
 } from "../_components/dashboard";
 import { ChatScripts, Tags, Response } from "../assets/svgs";
+import ShowModal from "../_components/showmodal";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -16,12 +17,20 @@ export default async function ProtectedPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { data } = await supabase
+    .from("user_details")
+    .select()
+    .eq("owner_id", user?.id);
+
+  console.log(data);
   if (!user) {
     return redirect("/sign-in");
   }
 
   return (
-    <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)] ">
+    <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)] z-0  relative ">
+      {/* Custom Modal */}
+      {/* {isCompanySet && <ShowModal />} */}
       <SearchBar name=" Dashboard" />
       <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
         <DashboardCardsWrapper>
