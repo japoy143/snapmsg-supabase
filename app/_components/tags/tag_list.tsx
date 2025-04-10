@@ -19,7 +19,7 @@ export default function TagList() {
 
   const [scriptId, setScriptId] = useState<number | null>();
   const searchParams = useSearchParams();
-  const search = searchParams.get("search")?.toLowerCase() ?? "";
+  const search = searchParams.get("search")?.toLowerCase() ?? ""; 
 
   if (isTagsPending) {
     return <span>Loading...</span>;

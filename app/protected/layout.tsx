@@ -8,6 +8,7 @@ import UserEmail from "./email";
 import { signOutAction } from "../actions";
 import Provider from "@/utils/Providers";
 import { ToastContainer, toast } from "react-toastify";
+import FreeTokens from "./free_token";
 export default function RootLayout({
   children,
 }: {
@@ -22,7 +23,7 @@ export default function RootLayout({
             <SideBar />
             <div className=" flex-1 flex flex-col justify-end text-white p-8 w-full space-y-4">
               <div>
-                <p>Free Tokens 40</p>
+                <FreeTokens />
               </div>
 
               <div>

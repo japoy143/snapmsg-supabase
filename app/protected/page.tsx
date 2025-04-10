@@ -18,7 +18,7 @@ export default async function ProtectedPage() {
   } = await supabase.auth.getUser();
 
   const {
-    data: { isCompanySet },
+    data: { id, isCompanySet },
   } = await supabase
     .from("user_details")
     .select("*")
@@ -32,7 +32,7 @@ export default async function ProtectedPage() {
   return (
     <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)] z-0  relative ">
       {/* Custom Modal */}
-      <ShowModal isset={isCompanySet} />
+      <ShowModal id={id} isset={isCompanySet} />
       <SearchBar name=" Dashboard" />
       <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
         <DashboardCardsWrapper>
