@@ -15,3 +15,11 @@ type ChatScriptsType = {
   owner_id: string;
   associated_tags_id: string;
 };
+
+type UserDetails = {
+  id: number;
+  auth_user_id: string;
+  tokens: number;
+  company_details: string;
+  isCompanySet: boolean;
+};

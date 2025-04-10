@@ -20,7 +20,7 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const { error, data } = await supabase.auth.signUp({
+  const { error: signUpError, data } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -28,26 +28,26 @@ export const signUpAction = async (formData: FormData) => {
     },
   });
 
-  if (error) {
-    console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
-  } else {
-    const {
-      error,
-    } = //assign to user details
-      await supabase.from("user_details").insert({ owner_id: data.user?.id });
-
-    if (error) {
-      console.error(error.code + " " + error.message);
-      return encodedRedirect("error", "/sign-up", error.message);
-    }
-
-    return encodedRedirect(
-      "success",
-      "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link."
-    );
+  if (signUpError) {
+    console.error(signUpError.code + " " + signUpError.message);
+    return encodedRedirect("error", "/sign-up", signUpError.message);
   }
+
+  const {
+    error: assignUserError,
+  } = //assign to user details
+    await supabase.from("user_details").insert({ auth_user_id: data.user?.id });
+
+  if (assignUserError) {
+    console.error(assignUserError.code + " " + assignUserError.message);
+    return encodedRedirect("error", "/sign-up", assignUserError.message);
+  }
+
+  return encodedRedirect(
+    "success",
+    "/sign-up",
+    "Thanks for signing up! Please check your email for a verification link."
+  );
 };
 
 export const signInAction = async (formData: FormData) => {
