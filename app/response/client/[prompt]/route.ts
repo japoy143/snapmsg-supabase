@@ -3,6 +3,7 @@ import { randomBytes } from "crypto";
 import { cookies } from "next/headers";
 
 const ai = new GoogleGenAI({ apiKey: process.env["GEMINI_API_KEY1"] });
+const cookie_auth_key = process.env["COOKIE_KEY"] ?? "";
 
 //generate token for users
 export async function generateRandomToken() {
@@ -14,9 +15,9 @@ export async function generateRandomToken() {
     free_token_count: 40,
   };
 
-  cookiesStore.set("auth_token", JSON.stringify(payload));
+  cookiesStore.set(cookie_auth_key, JSON.stringify(payload));
 
-  const value = cookiesStore.get("auth_token");
+  const value = cookiesStore.get(cookie_auth_key);
 
   return value;
 }
@@ -75,10 +76,10 @@ export async function GET(
   { params }: { params: { prompt: string } }
 ) {
   const { prompt } = await params;
-  const isTokenAlreadyExist = await isTokenExist("auth_token");
+  const isTokenAlreadyExist = await isTokenExist(cookie_auth_key);
 
   const cookies = isTokenAlreadyExist
-    ? await getToken("auth_token")
+    ? await getToken(cookie_auth_key)
     : await generateRandomToken();
 
   if (!cookies?.value) {
@@ -96,7 +97,7 @@ export async function GET(
     contents: prompt,
   });
 
-  await decrementFreeToken("auth_token");
+  await decrementFreeToken(cookie_auth_key);
 
   return Response.json({ token: parse.free_token_count, data: response.text });
 }
