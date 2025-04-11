@@ -21,5 +21,6 @@ type UserDetails = {
   auth_user_id: string;
   tokens: number;
   company_details: string;
+  company_name: string;
   isCompanySet: boolean;
 };
