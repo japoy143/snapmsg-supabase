@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
-export default function TagList() {
+export default function TagList({ id }: { id: string }) {
   const {
     isPending: isTagsPending,
     isError: isTagsError,
@@ -14,12 +14,12 @@ export default function TagList() {
     error: errorTag,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: getAllTags,
+    queryFn: () => getAllTags(id),
   });
 
   const [scriptId, setScriptId] = useState<number | null>();
   const searchParams = useSearchParams();
-  const search = searchParams.get("search")?.toLowerCase() ?? ""; 
+  const search = searchParams.get("search")?.toLowerCase() ?? "";
 
   if (isTagsPending) {
     return <span>Loading...</span>;

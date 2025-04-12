@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 import { useSearchParams } from "next/navigation";
 
-export default function ChatScriptsList() {
+export default function ChatScriptsList({ id }: { id: string }) {
   const [scriptId, setScriptId] = useState<number | undefined>();
   const searchParams = useSearchParams();
   const search = searchParams.get("search")?.toLowerCase() ?? "";
@@ -23,7 +23,7 @@ export default function ChatScriptsList() {
     error: tagError,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: getAllTags,
+    queryFn: () => getAllTags(id),
   });
 
   const {
@@ -33,7 +33,7 @@ export default function ChatScriptsList() {
     error: scriptError,
   } = useQuery({
     queryKey: ["scriptlist"],
-    queryFn: getAllChatScripts,
+    queryFn: () => getAllChatScripts(id),
   });
 
   if (isTagPending || isScriptPending) {

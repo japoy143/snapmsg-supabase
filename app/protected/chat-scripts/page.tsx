@@ -11,18 +11,30 @@ import {
 } from "@tanstack/react-query";
 import { getAllTags } from "@/utils/supabase/tags";
 import { getAllChatScripts } from "@/utils/supabase/chatscripts";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function page() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/sign-in");
+  }
+
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: ["taglist"],
-    queryFn: getAllTags,
+    queryFn: () => getAllTags(user.id),
   });
 
   await queryClient.prefetchQuery({
     queryKey: ["scriptlist"],
-    queryFn: getAllChatScripts,
+    queryFn: () => getAllChatScripts(user.id),
   });
 
   return (
@@ -30,7 +42,7 @@ export default async function page() {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <SearchBar name="Chat Scripts" />
         <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
-          <ChatScriptsDashboard />
+          <ChatScriptsDashboard id={user.id} />
 
           <DashboardCard>
             <h1 className=" font-medium ">All Chat Scripts</h1>
@@ -50,7 +62,7 @@ export default async function page() {
                 </div>
               </div>
 
-              <ChatScriptsList />
+              <ChatScriptsList id={user.id} />
             </div>
           </DashboardCard>
         </div>

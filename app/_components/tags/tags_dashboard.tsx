@@ -13,7 +13,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 
-export default function TagDashboard() {
+export default function TagDashboard({ id }: { id: string }) {
   const [state, action] = useActionState(addTags, null);
   const [tagname, setTagname] = useState<string>("");
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
@@ -43,7 +43,7 @@ export default function TagDashboard() {
     error: tagError,
   } = useQuery({
     queryKey: ["taglatest"],
-    queryFn: () => getLatestTags(5),
+    queryFn: () => getLatestTags(5, id),
   });
 
   if (isTagsPending) {

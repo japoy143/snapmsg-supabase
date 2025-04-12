@@ -10,7 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 
-export default function ChatScriptsDashboard() {
+export default function ChatScriptsDashboard({ id }: { id: string }) {
   //actions
   const [state, action] = useActionState(addScript, null);
   //states
@@ -27,7 +27,7 @@ export default function ChatScriptsDashboard() {
     error: tagError,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: getAllTags,
+    queryFn: () => getAllTags(id),
   });
 
   if (isTagPending) {

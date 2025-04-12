@@ -9,17 +9,28 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { getAllTags, getLatestTags } from "@/utils/supabase/tags";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 export default async function page() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/sign-in");
+  }
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery({
     queryKey: ["taglist"],
-    queryFn: getAllTags,
+    queryFn: () => getAllTags(user.id),
   });
 
   await queryClient.prefetchQuery({
     queryKey: ["taglatest"],
-    queryFn: () => getLatestTags(5),
+    queryFn: () => getLatestTags(5, user.id),
   });
 
   return (
@@ -27,7 +38,7 @@ export default async function page() {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <SearchBar name="Tags" />
         <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
-          <TagDashboard />
+          <TagDashboard id={user.id} />
 
           <DashboardCard>
             <h1 className=" font-medium ">All Tags</h1>
@@ -45,7 +56,7 @@ export default async function page() {
                 </div>
               </div>
 
-              <TagList />
+              <TagList id={user.id} />
             </div>
           </DashboardCard>
         </div>

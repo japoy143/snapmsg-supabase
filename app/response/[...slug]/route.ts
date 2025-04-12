@@ -25,7 +25,7 @@ export async function GET(
 
   // Get tags and scripts in parallel
   const [tags, scripts] = await Promise.all([
-    getAllTags(),
+    () => getAllTags(""),
     getAllChatScripts(),
   ]);
 

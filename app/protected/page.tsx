@@ -18,7 +18,7 @@ export default async function ProtectedPage() {
   } = await supabase.auth.getUser();
 
   const {
-    data: { id,isCompanySet },
+    data: { id, isCompanySet },
   } = await supabase
     .from("user_details")
     .select("*")

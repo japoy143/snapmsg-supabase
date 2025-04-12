@@ -4,25 +4,28 @@ import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { toast } from "react-toastify";
 
-export async function getAllTags(): Promise<TagType[] | null> {
+export async function getAllTags(id: string): Promise<TagType[] | null> {
   const supabase = await createClient(); // No need for `await` here
   const { data: tags } = await supabase
     .from("tags")
     .select()
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .eq("auth_user_id", id);
 
   return tags?.map((tag) => tag) ?? [];
 }
 
 export async function getLatestTags(
-  count: number = 6
+  count: number = 6,
+  id: string
 ): Promise<TagType[] | null> {
   const supabase = await createClient();
   const { data: tags } = await supabase
     .from("tags")
     .select()
     .order("created_at", { ascending: false })
-    .limit(count);
+    .limit(count)
+    .eq("auth_user_id", id);
 
   return tags?.map((tag) => tag) ?? [];
 }
@@ -51,7 +54,7 @@ export async function addTags(state: any, formData: FormData) {
     .insert([
       {
         tagname: formData.get("tagname"),
-        owner_id: user?.id,
+        auth_user_id: user?.id,
       },
     ])
     .select();

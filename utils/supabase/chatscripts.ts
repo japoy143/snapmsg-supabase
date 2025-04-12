@@ -5,13 +5,14 @@ import { ChatScriptsSchema } from "../../app/_lib/definitions";
 import { error } from "console";
 
 //get all chat_scripts
-export async function getAllChatScripts(): Promise<any[] | null> {
+export async function getAllChatScripts(id: string): Promise<any[] | null> {
   const supabase = await createClient();
 
   const { data: scripts } = await supabase
     .from("chat_scripts")
     .select()
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .eq("auth_user_id", id);
 
   return scripts?.map((item) => item) ?? [];
 }
@@ -44,7 +45,7 @@ export async function addScript(state: any, formData: FormData) {
       {
         scripts: formData.get("scripts"),
         associated_tags_id: formData.get("associated_tags"),
-        owner_id: user?.id,
+        auth_user_id: user?.id,
       },
     ])
     .select();
