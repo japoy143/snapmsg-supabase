@@ -1,5 +1,10 @@
 "use client";
-import React, { useActionState, useEffect, useState } from "react";
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import DashboardButton from "../dashboard/dashboard_button";
 import DashboardCards from "../dashboard/dashboard_cards";
 import DashboardCardsWrapper from "../dashboard/dashboard_cards_wrapper";
@@ -92,13 +97,21 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
     const listener = EventEmitter.addListener("update", sample);
 
     if (!state?.success) return;
-    toast("Successfully added new scripts", {
-      type: "success",
+
+    startTransition(() => {
+      toast("Successfully added new scripts", {
+        type: "success",
+      });
+      //clear states
+      clear();
+      action("RESET");
     });
 
-    //clear states
-    clear();
+    return () => {
+      EventEmitter.off("update", sample);
+    };
   }, [state?.success]);
+
   return (
     <DashboardCardsWrapper isCards="card">
       <DashboardCards>

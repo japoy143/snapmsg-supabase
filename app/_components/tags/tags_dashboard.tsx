@@ -1,5 +1,10 @@
 "use client";
-import React, { useActionState, useEffect, useState } from "react";
+import React, {
+  startTransition,
+  useActionState,
+  useEffect,
+  useState,
+} from "react";
 import {
   DashboardCardsWrapper,
   DashboardCards,
@@ -36,6 +41,7 @@ export default function TagDashboard({ id }: { id: string }) {
     }
   }
 
+  //use react query
   const {
     isPending: isTagsPending,
     isError: isTagsError,
@@ -64,11 +70,21 @@ export default function TagDashboard({ id }: { id: string }) {
 
     const listener = EventEmitter.addListener("updateTag", updateState);
 
-    if (state?.success) {
+    if (!state?.success) return;
+
+    //show toast and clear state
+    startTransition(() => {
       toast("Successfully added", { type: "success" });
+      action("RESET");
       clear();
-    }
+    });
+
+    //clear listener and useEffect
+    return () => {
+      EventEmitter.off("updateTag", updateState);
+    };
   }, [state?.success]);
+
   return (
     <>
       <DashboardCardsWrapper>

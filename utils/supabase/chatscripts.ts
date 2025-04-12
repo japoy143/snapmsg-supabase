@@ -5,7 +5,9 @@ import { ChatScriptsSchema } from "../../app/_lib/definitions";
 import { error } from "console";
 
 //get all chat_scripts
-export async function getAllChatScripts(id: string): Promise<any[] | null> {
+export async function getAllChatScripts(
+  id: string
+): Promise<ChatScriptsType[] | null> {
   const supabase = await createClient();
 
   const { data: scripts } = await supabase
@@ -22,7 +24,11 @@ ACTIONS
 */
 
 //ADD
-export async function addScript(state: any, formData: FormData) {
+export async function addScript(state: any, formData: FormData | "RESET") {
+  if (formData === "RESET") {
+    return { success: false };
+  }
+
   const validateResult = ChatScriptsSchema.safeParse({
     scripts: formData.get("scripts"),
     associated_tags: formData.get("associated_tags"),
