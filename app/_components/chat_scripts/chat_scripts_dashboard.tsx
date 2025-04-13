@@ -20,6 +20,7 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
   const [state, action] = useActionState(addScript, null);
   //states
   const [script, setScript] = useState<string>("");
+  const [script_title, setScriptTitle] = useState<string>("");
   const [selectedTag, setSelectedTag] = useState<TagType | undefined>();
   const [associatedTags, setAssociatedTags] = useState<TagType[]>([]);
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
@@ -62,6 +63,7 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
 
   function clear() {
     setScript("");
+    setScriptTitle("");
     setSelectedTag(undefined);
     setAssociatedTags([]);
     setUpdateId(0);
@@ -70,10 +72,16 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
 
   async function update(
     id: number,
+    script_title: string,
     script: string,
     associated_tags_id: string
   ) {
-    const { success } = await updateChatScripts(id, script, associated_tags_id);
+    const { success } = await updateChatScripts(
+      id,
+      script_title,
+      script,
+      associated_tags_id
+    );
 
     if (success) {
       toast("Successfully updated script", { type: "success" });
@@ -89,6 +97,7 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
     //set update state
     const sample = (data: any) => {
       setIsUpdate(true);
+      setScriptTitle(data.script_title);
       setScript(data.scriptname);
       setAssociatedTags(data.associated_tag);
       setUpdateId(data.id);
@@ -117,6 +126,15 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
       <DashboardCards>
         <form action={action} className="w-full h-full grid grid-cols-2 gap-2">
           <div className="flex h-full w-full flex-col">
+            <h1 className=" font-medium">Script Title</h1>
+            <input
+              className=" border-2 border-black/60 px-2 rounded"
+              type="text"
+              name="script_title"
+              placeholder=" enter script title"
+              value={script_title}
+              onChange={(e) => setScriptTitle(e.target.value)}
+            />
             <h1 className="font-medium">Add Chat Scripts</h1>
             <div className="w-full h-full flex-1 border-2 border-black/60 rounded-md">
               <textarea
@@ -191,6 +209,7 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
                   action={() =>
                     update(
                       updateId,
+                      script_title,
                       script,
                       JSON.stringify(associatedTags.map((item) => item.id))
                     )

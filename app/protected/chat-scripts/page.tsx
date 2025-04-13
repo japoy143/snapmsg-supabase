@@ -50,14 +50,14 @@ export default async function page() {
             {/* heading */}
             <div className=" flex-1 w-full h-[200px]  ">
               <div className=" w-full  grid grid-cols-7 p-2 text-left ">
-                <div className=" col-span-3 ">
+                <div className=" col-span-2 ">
+                  <h2>Script Title</h2>
+                </div>
+                <div className=" col-span-3">
                   <h2>Chat Scripts</h2>
                 </div>
-                <div className=" col-span-2">
-                  <h2>Associated Tags</h2>
-                </div>
                 <div className="  col-span-2 flex justify-between">
-                  <h2>Respond To</h2>
+                  <h2>Associated Tags</h2>
                   <h2>Actions</h2>
                 </div>
               </div>

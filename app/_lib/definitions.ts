@@ -8,6 +8,11 @@ export const TagSchema = z.object({
 });
 
 export const ChatScriptsSchema = z.object({
+  script_title: z
+    .string()
+    .min(1, "Please provide chat script title")
+    .max(255, "Character limit reach"),
+
   scripts: z
     .string()
     .min(1, "Please provide chat scripts")

@@ -2,7 +2,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { ChatScriptsSchema } from "../../app/_lib/definitions";
-import { error } from "console";
 
 //get all chat_scripts
 export async function getAllChatScripts(
@@ -30,6 +29,7 @@ export async function addScript(state: any, formData: FormData | "RESET") {
   }
 
   const validateResult = ChatScriptsSchema.safeParse({
+    script_title: formData.get("script_title"),
     scripts: formData.get("scripts"),
     associated_tags: formData.get("associated_tags"),
   });
@@ -49,6 +49,7 @@ export async function addScript(state: any, formData: FormData | "RESET") {
     .from("chat_scripts")
     .insert([
       {
+        script_title: formData.get("script_title"),
         scripts: formData.get("scripts"),
         associated_tags_id: formData.get("associated_tags"),
         auth_user_id: user?.id,
@@ -80,13 +81,18 @@ export async function deleteChatScripts(id: number) {
 //UPDATE
 export async function updateChatScripts(
   id: number,
+  script_title: string,
   script: string,
   associated_tags_id: string
 ) {
   const supabase = await createClient();
   const { error } = await supabase
     .from("chat_scripts")
-    .update({ scripts: script, associated_tags_id: associated_tags_id })
+    .update({
+      script_title: script_title,
+      scripts: script,
+      associated_tags_id: associated_tags_id,
+    })
     .eq("id", id);
 
   if (error) {

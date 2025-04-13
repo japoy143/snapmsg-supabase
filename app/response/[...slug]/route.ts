@@ -17,6 +17,7 @@ export async function splitPromptAndGetRelatedScript(
     return;
   }
 
+  let data = {};
   const split_prompt = prompt.toLowerCase().split(" ");
 
   const related_tags = tags?.flatMap((tag) =>
@@ -26,6 +27,32 @@ export async function splitPromptAndGetRelatedScript(
   );
 
   const related_tagname = related_tags?.map((tag) => tag.tagname);
+
+  const related_chat_script_title = chats_scripts
+    ?.filter((script) =>
+      split_prompt.some((word) =>
+        script.script_title.toLowerCase().includes(word.toLowerCase())
+      )
+    )
+    ?.sort((a, b) => {
+      const aMatches = split_prompt.filter((word) =>
+        a.script_title.toLowerCase().includes(word.toLowerCase())
+      ).length;
+
+      const bMatches = split_prompt.filter((word) =>
+        b.script_title.toLowerCase().includes(word.toLowerCase())
+      ).length;
+
+      return bMatches - aMatches; // more matches come first
+    });
+
+  if (related_chat_script_title?.length != 0) {
+    data = {
+      tagnames: related_tagname,
+      related_chatscripts: related_chat_script_title,
+    };
+    return data;
+  }
 
   const convert_chat_script_id = chats_scripts?.map((script) => ({
     ...script,
@@ -39,7 +66,7 @@ export async function splitPromptAndGetRelatedScript(
       ) || []
   );
 
-  const data = {
+  data = {
     tagnames: related_tagname,
     related_chatscripts: related_chat_scripts,
   };
@@ -71,7 +98,6 @@ export async function GET(
   ]);
 
   //get related details from prompt
-
   //split
   const split_related_prompt = await splitPromptAndGetRelatedScript(
     prompt,
@@ -90,7 +116,7 @@ export async function GET(
     split_related_prompt?.related_chatscripts != undefined &&
     split_related_prompt.related_chatscripts.length != 0
   ) {
-    additionalDetails = split_related_prompt?.related_chatscripts[0];
+    additionalDetails = split_related_prompt?.related_chatscripts[0].scripts;
   }
 
   //Relate company details
@@ -101,9 +127,10 @@ export async function GET(
     contents: prompt_options,
   });
 
-  if (response.text) {
-    await decrementUserFreeToken(user.auth_user_id, user.tokens);
+  if (!response) {
+    return Response.json({ message: "Request error" });
   }
 
+  await decrementUserFreeToken(user.auth_user_id, user.tokens);
   return Response.json(response.text);
 }
