@@ -87,8 +87,8 @@ export default function TagDashboard({ id }: { id: string }) {
 
   return (
     <>
-      <DashboardCardsWrapper>
-        <DashboardCards>
+      <DashboardCardsWrapper isCards="four-cards">
+        <DashboardCards className=" hidden md:flex md:col-span-2">
           <DashboardHeadingIcon
             color="bg-[var(--pastel-yellow-color)]"
             icon={<Tags className="size-6" />}
@@ -108,7 +108,7 @@ export default function TagDashboard({ id }: { id: string }) {
           </div>
         </DashboardCards>
 
-        <DashboardCards className=" col-span-2">
+        <DashboardCards className="col-span-4 md:col-span-2">
           <h1 className="font-medium">Add Tags</h1>
           <form
             action={action}

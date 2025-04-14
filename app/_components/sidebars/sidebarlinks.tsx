@@ -1,11 +1,11 @@
 "use client";
 import React from "react";
-import LogoHeader from "./logo-header";
-import DashboardLinks from "./dashboard/dashboard_links";
-import { Stack, Tags, Response, ChatScripts } from "../assets/svgs";
+import LogoHeader from "../logo-header";
+import DashboardLinks from "../dashboard/dashboard_links";
+import { Stack, Tags, Response, ChatScripts } from "../../assets/svgs";
 import { usePathname } from "next/navigation";
 
-export default function SideBar() {
+export default function SideBarLinks() {
   const pathName = usePathname();
   return (
     <>

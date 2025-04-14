@@ -9,7 +9,7 @@ export default function DashboardCards({
 }) {
   return (
     <div
-      className={`${className} h-[200px] flex flex-col bg-[var(--cards-background-color)] shadow-md px-4 py-2 rounded`}
+      className={`${className}  h-[200px] flex flex-col bg-[var(--cards-background-color)] shadow-md px-4 py-2 rounded`}
     >
       {children}
     </div>

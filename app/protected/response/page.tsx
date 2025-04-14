@@ -1,4 +1,5 @@
 import { DashboardCard } from "@/app/_components/dashboard";
+import MessageResponse from "@/app/_components/response/message_response";
 import ResponseDashboard from "@/app/_components/response/response_dashboard";
 import SearchBar from "@/app/_components/search-bar";
 import { createClient } from "@/utils/supabase/server";
@@ -23,7 +24,7 @@ export default async function page() {
 
         <DashboardCard>
           <h1 className=" font-medium">Sample Response</h1>
-          <div className=" border-2 border-black/60 rounded flex-1 w-full h-[400px]"></div>
+          <MessageResponse />
         </DashboardCard>
       </div>
     </div>

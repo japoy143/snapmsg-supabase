@@ -17,5 +17,5 @@ export default async function FreeTokens() {
     .eq("auth_user_id", user?.id)
     .single();
 
-  return <p>Free Tokens {tokens}</p>;
+  return <>{tokens}</>;
 }

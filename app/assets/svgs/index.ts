@@ -5,3 +5,5 @@ export { default as Response } from "./response";
 export { default as Search } from "./search";
 export { default as ArrowDown } from "./arrowdown";
 export { default as ActionsMenu } from "./actionsmenu";
+export { default as Logout } from "./logout";
+export { default as Tokens } from "./tokens";

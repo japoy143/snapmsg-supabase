@@ -8,6 +8,10 @@ export default function FormWrapper({
   sizes?: "md" | "lg";
 }) {
   return (
-    <div className={` w-1/3  bg-white  py-6  px-8 rounded-lg `}>{children}</div>
+    <div
+      className={` md:w-1/2 lg:w-1/3 xl:w-1/4  bg-white  py-6  px-8 rounded-lg `}
+    >
+      {children}
+    </div>
   );
 }

@@ -8,5 +8,12 @@ export default async function UserEmail() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  return <p>{user?.email}</p>;
+
+  if (!user || !user.email) {
+    return <p>No email found</p>;
+  }
+
+  const splitUserEmail = user.email.split("@");
+
+  return <p>{splitUserEmail[0] || user.email}</p>;
 }
