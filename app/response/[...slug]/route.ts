@@ -4,6 +4,8 @@ import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 import { getAllTags } from "@/utils/supabase/tags";
 import { decrementUserFreeToken } from "@/utils/supabase/users";
 import { GoogleGenAI } from "@google/genai";
+import { revalidatePath } from "next/cache";
+import type { NextRequest } from "next/server";
 
 const ai = new GoogleGenAI({ apiKey: process.env["GEMINI_API_KEY1"] });
 
@@ -75,7 +77,7 @@ export async function splitPromptAndGetRelatedScript(
 }
 
 export async function GET(
-  req: Request,
+  request: Request,
   { params }: { params: Promise<{ slug: string[] }> }
 ) {
   const {
@@ -120,7 +122,7 @@ export async function GET(
   }
 
   //Relate company details
-  const prompt_options = ` Company Name:${user.company_name}, Company details:${user.company_details}, categories:${categories} additional details:${additionalDetails}  content:${prompt}, make this like a response to a client or customer`;
+  const prompt_options = ` Company Name:${user.company_name}, Company details:${user.company_details}, categories:${categories} additional details:${additionalDetails}  content:${prompt}, make this like a response to a client or customer, disregard the additional details if its not relevant to the content`;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash",
@@ -132,5 +134,6 @@ export async function GET(
   }
 
   await decrementUserFreeToken(user.auth_user_id, user.tokens);
+
   return Response.json(response.text);
 }

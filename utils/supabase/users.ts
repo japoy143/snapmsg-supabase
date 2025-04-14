@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { createClient } from "./server";
-import { error } from "console";
+import { revalidatePath } from "next/cache";
 
 //GET USER
 export async function getUserId() {

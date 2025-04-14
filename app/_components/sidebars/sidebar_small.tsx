@@ -11,7 +11,7 @@ import Link from "next/link";
 import React from "react";
 import SidebarLinksSmall from "./sidebarlinks_small";
 import { signOutAction } from "@/app/actions";
-import FreeTokens from "@/app/protected/free_token";
+import FreeTokens from "@/app/_components/free_token";
 
 export default function SidebarSmall() {
   return (

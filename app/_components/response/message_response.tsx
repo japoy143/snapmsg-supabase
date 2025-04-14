@@ -1,5 +1,6 @@
 "use client";
 import EventEmitter from "@/utils/EventEmitter";
+import { revalidatePath } from "next/cache";
 import React, { useEffect, useState } from "react";
 
 export default function MessageResponse() {
@@ -8,6 +9,7 @@ export default function MessageResponse() {
 
   //events
   useEffect(() => {
+    console.log("running");
     const setter = (data: promptStatus) => {
       if (data.status === "pending") {
         setIsPending(true);
@@ -26,8 +28,92 @@ export default function MessageResponse() {
 
   return (
     <>
-      <div className=" border-2 border-black/60 rounded flex-1 w-full h-full p-4 ">
-        {isPending ? <p>Loading...</p> : response}
+      <div className="  overflow-y-scroll border-2 border-black/60 rounded flex-1 w-full h-[460px] p-4 ">
+        {isPending ? (
+          <div className=" animate-pulse text-justify space-y-6 ">
+            <div className="space-y-2">
+              <p>
+                <span className="  bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <p>
+                <span className="  bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+
+              <p>
+                <span className="   bg-slate-100 text-transparent">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Perspiciatis iste similique veritatis optio similique
+                  veritatis optio
+                </span>
+              </p>
+            </div>
+          </div>
+        ) : (
+          response
+        )}
       </div>
     </>
   );

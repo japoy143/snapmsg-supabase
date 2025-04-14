@@ -1,6 +1,6 @@
 import { signOutAction } from "@/app/actions";
-import UserEmail from "@/app/protected/email";
-import FreeTokens from "@/app/protected/free_token";
+import UserEmail from "@/app/_components/email";
+import FreeTokens from "@/app/_components/free_token";
 import React from "react";
 import SideBarLinks from "./sidebarlinks";
 
