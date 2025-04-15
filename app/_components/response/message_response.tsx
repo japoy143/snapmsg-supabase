@@ -1,11 +1,13 @@
 "use client";
 import EventEmitter from "@/utils/EventEmitter";
-import { revalidatePath } from "next/cache";
+import { useRouter } from "next/navigation";
+
 import React, { useEffect, useState } from "react";
 
 export default function MessageResponse() {
   const [response, setResponse] = useState<string>("");
   const [isPending, setIsPending] = useState<boolean>(false);
+  const router = useRouter();
 
   //events
   useEffect(() => {
@@ -15,8 +17,11 @@ export default function MessageResponse() {
         setIsPending(true);
       } else if (data.status === "resolve") {
         setIsPending(false);
+      } else {
+        setIsPending(false);
       }
       setResponse(data.response ?? "");
+      router.refresh();
     };
 
     const listener = EventEmitter.addListener("api-called", setter);

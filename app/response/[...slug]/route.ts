@@ -1,13 +1,17 @@
 "use server";
 import { getUserDetails } from "@/utils/supabase/api/response_company";
+import { getApiCounter, setNewApiCounter } from "@/utils/supabase/api_counter";
 import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 import { getAllTags } from "@/utils/supabase/tags";
 import { decrementUserFreeToken } from "@/utils/supabase/users";
 import { GoogleGenAI } from "@google/genai";
-import { revalidatePath } from "next/cache";
-import type { NextRequest } from "next/server";
 
-const ai = new GoogleGenAI({ apiKey: process.env["GEMINI_API_KEY1"] });
+let apiKey = "";
+const geminiKey1 = process.env["GEMINI_API_KEY1"];
+const geminiKey2 = process.env["GEMINI_API_KEY2"];
+const geminiKey3 = process.env["GEMINI_API_KEY3"];
+const geminiKey4 = process.env["GEMINI_API_KEY4"];
+const geminiKey5 = process.env["GEMINI_API_KEY5"];
 
 //get the prompt and split
 export async function splitPromptAndGetRelatedScript(
@@ -76,6 +80,30 @@ export async function splitPromptAndGetRelatedScript(
   return data;
 }
 
+//set api key
+export async function setApiKey(api_counter: number) {
+  switch (api_counter) {
+    //use geminiApiKey1
+    case 0:
+      apiKey = geminiKey1 ?? "";
+      break;
+    case 1:
+      apiKey = geminiKey2 ?? "";
+      break;
+    case 2:
+      apiKey = geminiKey3 ?? "";
+      break;
+    case 3:
+      apiKey = geminiKey4 ?? "";
+      break;
+    case 4:
+      apiKey = geminiKey5 ?? "";
+      break;
+    default:
+      apiKey = geminiKey1 ?? "";
+  }
+}
+
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string[] }> }
@@ -94,10 +122,14 @@ export async function GET(
   }
 
   // Get tags and scripts in parallel
-  const [tags, scripts] = await Promise.all([
+  const [tags, scripts, api_counter] = await Promise.all([
     getAllTags(user.auth_user_id),
     getAllChatScripts(user.auth_user_id),
+    getApiCounter(),
   ]);
+
+  //change the api key base on counter
+  setApiKey(api_counter);
 
   //get related details from prompt
   //split
@@ -123,7 +155,7 @@ export async function GET(
 
   //Relate company details
   const prompt_options = ` Company Name:${user.company_name}, Company details:${user.company_details}, categories:${categories} additional details:${additionalDetails}  content:${prompt}, make this like a response to a client or customer, disregard the additional details if its not relevant to the content`;
-
+  const ai = new GoogleGenAI({ apiKey: apiKey });
   const response = await ai.models.generateContent({
     model: "gemini-2.0-flash",
     contents: prompt_options,
@@ -133,7 +165,10 @@ export async function GET(
     return Response.json({ message: "Request error" });
   }
 
-  await decrementUserFreeToken(user.auth_user_id, user.tokens);
+  const [decrement, newval] = await Promise.all([
+    decrementUserFreeToken(user.auth_user_id, user.tokens),
+    setNewApiCounter(api_counter),
+  ]);
 
   return Response.json(response.text);
 }
