@@ -11,6 +11,7 @@ import {
 import { getAllTags, getLatestTags } from "@/utils/supabase/tags";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 
 export default async function page() {
   const supabase = await createClient();
@@ -22,16 +23,24 @@ export default async function page() {
   if (!user) {
     return redirect("/sign-in");
   }
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery({
-    queryKey: ["taglist"],
-    queryFn: () => getAllTags(user.id),
-  });
 
-  await queryClient.prefetchQuery({
-    queryKey: ["taglatest"],
-    queryFn: () => getLatestTags(5, user.id),
-  });
+  const queryClient = new QueryClient();
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["taglist"],
+      queryFn: () => getAllTags(user.id),
+    }),
+
+    queryClient.prefetchQuery({
+      queryKey: ["taglatest"],
+      queryFn: () => getLatestTags(5, user.id),
+    }),
+
+    queryClient.prefetchQuery({
+      queryKey: ["scriptlist"],
+      queryFn: () => getAllChatScripts(user.id),
+    }),
+  ]);
 
   return (
     <div className="flex-1 w-full h-screen flex flex-col bg-[var(--dashboard-background-color)] ">
@@ -47,11 +56,10 @@ export default async function page() {
                 <div className=" col-span-3 ">
                   <h2>Tag Name</h2>
                 </div>
-                <div className=" col-span-2">
+                <div className=" col-span-3">
                   <h2>Associated Chat Script</h2>
                 </div>
-                <div className="  col-span-2 flex justify-between">
-                  <h2>Total Associated</h2>
+                <div className="  col-span-1 flex justify-end">
                   <h2>Actions</h2>
                 </div>
               </div>

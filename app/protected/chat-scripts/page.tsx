@@ -27,15 +27,17 @@ export default async function page() {
 
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["taglist"],
-    queryFn: () => getAllTags(user.id),
-  });
+  await Promise.all([
+    queryClient.prefetchQuery({
+      queryKey: ["taglist"],
+      queryFn: () => getAllTags(user.id),
+    }),
 
-  await queryClient.prefetchQuery({
-    queryKey: ["scriptlist"],
-    queryFn: () => getAllChatScripts(user.id),
-  });
+    queryClient.prefetchQuery({
+      queryKey: ["scriptlist"],
+      queryFn: () => getAllChatScripts(user.id),
+    }),
+  ]);
 
   return (
     <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)]">

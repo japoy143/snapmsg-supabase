@@ -2,33 +2,61 @@
 import { TagSchema } from "@/app/_lib/definitions";
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { cache } from "react";
 import { toast } from "react-toastify";
 
-export async function getAllTags(id: string): Promise<TagType[] | null> {
-  const supabase = await createClient(); // No need for `await` here
-  const { data: tags } = await supabase
-    .from("tags")
-    .select()
-    .order("created_at", { ascending: false })
-    .eq("auth_user_id", id);
+// export async function getAllTags(id: string): Promise<TagType[] | null> {
+//   const supabase = await createClient(); // No need for `await` here
+//   const { data: tags } = await supabase
+//     .from("tags")
+//     .select()
+//     .order("created_at", { ascending: false })
+//     .eq("auth_user_id", id);
 
-  return tags?.map((tag) => tag) ?? [];
-}
+//   return tags?.map((tag) => tag) ?? [];
+// }
 
-export async function getLatestTags(
-  count: number = 6,
-  id: string
-): Promise<TagType[] | null> {
-  const supabase = await createClient();
-  const { data: tags } = await supabase
-    .from("tags")
-    .select()
-    .order("created_at", { ascending: false })
-    .limit(count)
-    .eq("auth_user_id", id);
+//caching
+export const getAllTags = cache(
+  async (id: string): Promise<TagType[] | null> => {
+    const supabase = await createClient(); // No need for `await` here
+    const { data: tags } = await supabase
+      .from("tags")
+      .select()
+      .order("created_at", { ascending: false })
+      .eq("auth_user_id", id);
+    return tags?.map((tag) => tag) ?? [];
+  }
+);
 
-  return tags?.map((tag) => tag) ?? [];
-}
+// export async function getLatestTags(
+//   count: number = 6,
+//   id: string
+// ): Promise<TagType[] | null> {
+//   const supabase = await createClient();
+//   const { data: tags } = await supabase
+//     .from("tags")
+//     .select()
+//     .order("created_at", { ascending: false })
+//     .limit(count)
+//     .eq("auth_user_id", id);
+
+//   return tags?.map((tag) => tag) ?? [];
+// }
+
+//caching
+export const getLatestTags = cache(
+  async (count: number = 6, id: string): Promise<TagType[] | null> => {
+    const supabase = await createClient();
+    const { data: tags } = await supabase
+      .from("tags")
+      .select()
+      .order("created_at", { ascending: false })
+      .limit(count)
+      .eq("auth_user_id", id);
+    return tags?.map((tag) => tag) ?? [];
+  }
+);
 
 /*
 ACTIONS

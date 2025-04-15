@@ -2,21 +2,37 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { ChatScriptsSchema } from "../../app/_lib/definitions";
+import { cache } from "react";
 
 //get all chat_scripts
-export async function getAllChatScripts(
-  id: string
-): Promise<ChatScriptsType[] | null> {
-  const supabase = await createClient();
+// export async function getAllChatScripts(
+//   id: string
+// ): Promise<ChatScriptsType[] | null> {
+//   const supabase = await createClient();
 
-  const { data: scripts } = await supabase
-    .from("chat_scripts")
-    .select()
-    .order("created_at", { ascending: false })
-    .eq("auth_user_id", id);
+//   const { data: scripts } = await supabase
+//     .from("chat_scripts")
+//     .select()
+//     .order("created_at", { ascending: false })
+//     .eq("auth_user_id", id);
 
-  return scripts?.map((item) => item) ?? [];
-}
+//   return scripts?.map((item) => item) ?? [];
+// }
+
+//caching
+export const getAllChatScripts = cache(
+  async (id: string): Promise<ChatScriptsType[] | null> => {
+    const supabase = await createClient();
+
+    const { data: scripts } = await supabase
+      .from("chat_scripts")
+      .select()
+      .order("created_at", { ascending: false })
+      .eq("auth_user_id", id);
+
+    return scripts?.map((item) => item) ?? [];
+  }
+);
 
 /*
 ACTIONS

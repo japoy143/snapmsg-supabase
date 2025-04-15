@@ -9,6 +9,8 @@ import {
 } from "../_components/dashboard";
 import { ChatScripts, Tags, Response } from "../assets/svgs";
 import ShowModal from "../_components/showmodal";
+import { getAllChatScripts } from "@/utils/supabase/chatscripts";
+import { getAllTags } from "@/utils/supabase/tags";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -17,23 +19,35 @@ export default async function ProtectedPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const {
-    data: { id, isCompanySet },
-  } = await supabase
-    .from("user_details")
-    .select("*")
-    .eq("auth_user_id", user?.id)
-    .single();
-
   if (!user) {
     return redirect("/sign-in");
   }
 
+  async function userDetails(id: string) {
+    const { data, error } = await supabase
+      .from("user_details")
+      .select("*")
+      .eq("auth_user_id", id)
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data;
+  }
+
+  const [scripts, tags, data] = await Promise.all([
+    getAllChatScripts(user.id),
+    getAllTags(user.id),
+    userDetails(user.id),
+  ]);
+
   return (
     <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)] z-0  relative ">
       {/* Custom Modal */}
-      <ShowModal id={id} isset={isCompanySet} />
-      <SearchBar name=" Dashboard" />
+      <ShowModal id={data.id} isset={data.isCompanySet} />
+      <SearchBar name=" Dashboard" isSearchVisible="hidden" />
       <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
         <DashboardCardsWrapper>
           <DashboardCards>
@@ -42,11 +56,9 @@ export default async function ProtectedPage() {
               icon={<ChatScripts className="size-6" />}
               headingName="Chat Scripts"
             />
-            <h1 className=" text-center text-4xl font-medium ">10</h1>
-
-            <div className=" flex-1 flex items-end justify-end h-full w-full">
-              <p className=" text-gray-400 text-xs">Last updated 7hrs ago</p>
-            </div>
+            <h1 className=" text-center text-4xl font-medium ">
+              {scripts?.length}
+            </h1>
           </DashboardCards>
 
           <DashboardCards>
@@ -56,11 +68,9 @@ export default async function ProtectedPage() {
               headingName="Total Tags"
             />
 
-            <h1 className=" text-center text-4xl font-medium ">20</h1>
-
-            <div className=" flex-1 flex items-end justify-end h-full w-full">
-              <p className=" text-gray-400 text-xs">Last updated 7hrs ago</p>
-            </div>
+            <h1 className=" text-center text-4xl font-medium ">
+              {tags?.length}
+            </h1>
           </DashboardCards>
 
           <DashboardCards>
@@ -69,11 +79,9 @@ export default async function ProtectedPage() {
               icon={<Response className="size-6" />}
               headingName="Total Response"
             />
-            <h1 className=" text-center text-4xl font-medium ">40</h1>
-
-            <div className=" flex-1 flex items-end justify-end h-full w-full">
-              <p className=" text-gray-400 text-xs">Last updated 7hrs ago</p>
-            </div>
+            <h1 className=" text-center text-4xl font-medium ">
+              {40 - data.tokens}
+            </h1>
           </DashboardCards>
         </DashboardCardsWrapper>
 

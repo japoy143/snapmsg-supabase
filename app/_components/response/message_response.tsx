@@ -1,7 +1,6 @@
 "use client";
 import EventEmitter from "@/utils/EventEmitter";
 import { useRouter } from "next/navigation";
-
 import React, { useEffect, useState } from "react";
 
 export default function MessageResponse() {
@@ -17,11 +16,11 @@ export default function MessageResponse() {
         setIsPending(true);
       } else if (data.status === "resolve") {
         setIsPending(false);
+        router.refresh();
       } else {
         setIsPending(false);
       }
       setResponse(data.response ?? "");
-      router.refresh();
     };
 
     const listener = EventEmitter.addListener("api-called", setter);
@@ -33,7 +32,7 @@ export default function MessageResponse() {
 
   return (
     <>
-      <div className="  overflow-y-scroll border-2 border-black/60 rounded flex-1 w-full h-[460px] p-4 ">
+      <div className="  overflow-y-scroll border-2 border-black/60 rounded flex-1 w-full h-full xl:h-[460px] p-4 ">
         {isPending ? (
           <div className=" animate-pulse text-justify space-y-6 ">
             <div className="space-y-2">
@@ -117,7 +116,7 @@ export default function MessageResponse() {
             </div>
           </div>
         ) : (
-          response
+          <div className=" text-justify">{response}</div>
         )}
       </div>
     </>

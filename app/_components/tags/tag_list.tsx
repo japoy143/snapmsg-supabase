@@ -1,6 +1,7 @@
 "use client";
 import ActionsMenu from "@/app/assets/svgs/actionsmenu";
 import EventEmitter from "@/utils/EventEmitter";
+import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 import { deleteTag, getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
@@ -17,26 +18,43 @@ export default function TagList({ id }: { id: string }) {
     queryFn: () => getAllTags(id),
   });
 
+  const {
+    isPending: isScriptPending,
+    isError: isScriptError,
+    data: scriptData,
+    error: errorScript,
+  } = useQuery({
+    queryKey: ["scriptlist"],
+    queryFn: () => getAllChatScripts(id),
+  });
+
   const [scriptId, setScriptId] = useState<number | null>();
   const searchParams = useSearchParams();
   const search = searchParams.get("search")?.toLowerCase() ?? "";
 
-  if (isTagsPending) {
+  if (isTagsPending && isScriptPending) {
     return <span>Loading...</span>;
   }
 
-  if (isTagsError) {
-    return <span>Error: {errorTag.message}</span>;
+  if (isTagsError && isScriptError) {
+    return (
+      <span>
+        ErrorTag: {errorTag.message}, ErrorScript:{errorScript.message}
+      </span>
+    );
   }
 
-  function showAllAssociatedTags(ids: string) {
+  function showAllAssociatedScripts(id: number) {
     try {
-      const tagIds: number[] = JSON.parse(ids);
+      const filterScripts = scriptData?.filter((script) =>
+        JSON.parse(script.associated_tags_id).some((item: any) => item === id)
+      );
 
-      return tagIds
-        .map((id) => tagsData?.find((tag) => tag.id === id))
-        .filter((tag): tag is TagType => tag !== undefined) // removes undefined ensures only true or false
-        .map((item) => <span key={item.id}>{item.tagname}</span>); // only tagname
+      return filterScripts?.map((script, index) => {
+        if (index <= 3) {
+          return <span>{script.script_title}</span>;
+        }
+      });
     } catch (e) {
       return <span></span>;
     }
@@ -67,11 +85,10 @@ export default function TagList({ id }: { id: string }) {
               <div className="col-span-3 h-[140px] p-2 border-r-2 border-black/60">
                 <p>{tag.tagname}</p>
               </div>
-              <div className="col-span-2 flex flex-wrap space-x-2 p-2 border-r-2 border-black/60">
-                10
+              <div className="col-span-3 flex flex-wrap space-x-2 p-2 border-r-2 border-black/60">
+                {showAllAssociatedScripts(tag.id)}
               </div>
-              <div className="col-span-2 flex justify-between p-2">
-                <h2>Respond To {search}</h2>
+              <div className="col-span-1  flex  justify-end p-2">
                 <div
                   className="cursor-pointer"
                   onClick={() => openActionOptions(tag.id)}

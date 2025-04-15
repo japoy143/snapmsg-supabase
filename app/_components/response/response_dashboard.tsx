@@ -1,16 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import {
-  DashboardCardsWrapper,
-  DashboardCards,
-  DashboardButton,
-} from "../dashboard";
+import { DashboardCardsWrapper, DashboardButton } from "../dashboard";
 import { useQuery } from "@tanstack/react-query";
 import { getUserId } from "@/utils/supabase/users";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 import axios from "axios";
-import { Message } from "../../../components/form-message";
 
 export default function ResponseDashboard() {
   const { isPending, isError, data, error } = useQuery({
