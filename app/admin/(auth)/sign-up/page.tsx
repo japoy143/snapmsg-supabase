@@ -1,35 +1,23 @@
-import { signUpAction } from "@/app/actions";
-import { FormMessage, Message } from "@/components/form-message";
+import { FormWrapper, LogoHeader } from "@/app/_components";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { signUpAdmin } from "@/utils/supabase/admin/auth";
+import { Label } from "@radix-ui/react-label";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
-import FormWrapper from "../../_components/formwrapper";
-import { LogoHeader } from "@/app/_components";
 
-export default async function Signup(props: {
-  searchParams: Promise<Message>;
-}) {
-  const searchParams = await props.searchParams;
-  if ("message" in searchParams) {
-    return (
-      <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4">
-        <FormMessage message={searchParams} />
-      </div>
-    );
-  }
+import React from "react";
 
+export default function page() {
   return (
     <div className=" h-screen w-screen bg-[var(--forms-background-color)] flex flex-col items-center justify-center">
-      <FormWrapper sizes="lg">
+      <FormWrapper>
         {/* heading  */}
         <div className=" w-full flex items-center justify-center">
           <LogoHeader />
         </div>
         <div className=" mt-4">
           <h1 className=" text-3xl text-center text-[var(--primary-color)]">
-            Sign up an Account
+            Sign up Admin account
           </h1>
           <p className=" text-sm w-full text-black/40 text-center px-6">
             Respond quickly to your client with Ai assisted response and
@@ -48,16 +36,18 @@ export default async function Signup(props: {
               minLength={6}
               required
             />
-            <SubmitButton formAction={signUpAction} pendingText="Signing up...">
+            <SubmitButton formAction={signUpAdmin} pendingText="Signing up...">
               Sign up
             </SubmitButton>
             <p className="text-sm w-4/5 text-black/40">
               Already have an{" "}
-              <Link className="text-[var(--secondary-color)]" href={"/sign-in"}>
+              <Link
+                className="text-[var(--secondary-color)]"
+                href={"/admin/sign-in"}
+              >
                 account?
               </Link>
             </p>
-            <FormMessage message={searchParams} />
           </div>
         </form>
       </FormWrapper>

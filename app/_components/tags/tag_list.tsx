@@ -52,7 +52,7 @@ export default function TagList({ id }: { id: string }) {
 
       return filterScripts?.map((script, index) => {
         if (index <= 3) {
-          return <span>{script.script_title}</span>;
+          return <span key={script.id}>{script.script_title}</span>;
         }
       });
     } catch (e) {

@@ -1,63 +1,61 @@
-import { signUpAction } from "@/app/actions";
-import { FormMessage, Message } from "@/components/form-message";
+import { FormWrapper, LogoHeader } from "@/app/_components";
+import { signInAction } from "@/app/actions";
+
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { signInAdmin } from "@/utils/supabase/admin/auth";
 import Link from "next/link";
-import { SmtpMessage } from "../smtp-message";
-import FormWrapper from "../../_components/formwrapper";
-import { LogoHeader } from "@/app/_components";
 
-export default async function Signup(props: {
-  searchParams: Promise<Message>;
-}) {
-  const searchParams = await props.searchParams;
-  if ("message" in searchParams) {
-    return (
-      <div className="w-full flex-1 flex items-center h-screen sm:max-w-md justify-center gap-2 p-4">
-        <FormMessage message={searchParams} />
-      </div>
-    );
-  }
-
+export default async function page() {
   return (
     <div className=" h-screen w-screen bg-[var(--forms-background-color)] flex flex-col items-center justify-center">
-      <FormWrapper sizes="lg">
+      <FormWrapper>
         {/* heading  */}
         <div className=" w-full flex items-center justify-center">
           <LogoHeader />
         </div>
         <div className=" mt-4">
-          <h1 className=" text-3xl text-center text-[var(--primary-color)]">
-            Sign up an Account
+          <h1 className=" text-3xl text-[var(--primary-color)] text-center">
+            Login to your Admin account
           </h1>
           <p className=" text-sm w-full text-black/40 text-center px-6">
             Respond quickly to your client with Ai assisted response and
             accuracy.
           </p>
         </div>
-        <form>
+
+        <form className="flex-1 flex flex-col min-w-64">
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
             <Label htmlFor="email">Email</Label>
             <Input name="email" placeholder="you@example.com" required />
-            <Label htmlFor="password">Password</Label>
+            <div className="flex justify-between items-center">
+              <Label htmlFor="password">Password</Label>
+              <Link
+                className="text-xs text-foreground underline"
+                href="/forgot-password"
+              >
+                Forgot Password?
+              </Link>
+            </div>
             <Input
               type="password"
               name="password"
               placeholder="Your password"
-              minLength={6}
               required
             />
-            <SubmitButton formAction={signUpAction} pendingText="Signing up...">
-              Sign up
+            <SubmitButton pendingText="Signing In..." formAction={signInAdmin}>
+              Sign in
             </SubmitButton>
             <p className="text-sm w-4/5 text-black/40">
-              Already have an{" "}
-              <Link className="text-[var(--secondary-color)]" href={"/sign-in"}>
+              Doesn't have an{" "}
+              <Link
+                className="text-[var(--secondary-color)]"
+                href={"/admin/sign-up"}
+              >
                 account?
               </Link>
             </p>
-            <FormMessage message={searchParams} />
           </div>
         </form>
       </FormWrapper>

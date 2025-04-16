@@ -11,6 +11,8 @@ import { ChatScripts, Tags, Response } from "../assets/svgs";
 import ShowModal from "../_components/showmodal";
 import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 import { getAllTags } from "@/utils/supabase/tags";
+import ChatScriptsLatest from "../_components/dashboard/chat_scripts_latest";
+import TagListLatest from "../_components/dashboard/tag_list_latest";
 
 export default async function ProtectedPage() {
   const supabase = await createClient();
@@ -86,7 +88,27 @@ export default async function ProtectedPage() {
         </DashboardCardsWrapper>
 
         <DashboardCard>
-          <p>Protected</p>
+          <h1>Latest Chat Scripts</h1>
+          <div className=" flex-1 w-full ">
+            <div className=" w-full  grid grid-cols-4 p-2 text-left ">
+              <div className=" col-span-2">
+                <h2>Script Title</h2>
+              </div>
+              <div className=" col-span-2">
+                <h2>Associated Chat Script</h2>
+              </div>
+            </div>
+          </div>
+          <ChatScriptsLatest id={user.id} />
+          <h1 className="mt-2">Latest Tags</h1>
+          <div className=" flex-1 w-full ">
+            <div className=" w-full  grid grid-cols-2 p-2 text-left ">
+              <div className=" col-span-2">
+                <h2>Tagname</h2>
+              </div>
+            </div>
+          </div>
+          <TagListLatest id={user.id} />
         </DashboardCard>
       </div>
     </div>
