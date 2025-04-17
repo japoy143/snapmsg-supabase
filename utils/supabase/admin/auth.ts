@@ -5,7 +5,6 @@ import { createClient } from "../server";
 import { cookies } from "next/headers";
 import { randomBytes } from "crypto";
 import { encodedRedirect } from "@/utils/utils";
-import { error } from "console";
 
 const auth_admin_token = process.env["ADMIN_AUTH_TOKEN"];
 const admin_cookie_token = process.env["ADMIN_COOKIE_TOKEN"] ?? "";
@@ -81,6 +80,19 @@ export async function signOutAdmin() {
   const cookie = await cookies();
   const supabase = await createClient();
   const token = cookie.get(admin_cookie_token);
+
+  if (token?.value === undefined) {
+    const { data: isSessionClear, error: isError } = await supabase
+      .from("admin_account")
+      .update({ token: "" })
+      .eq("password", auth_admin_token);
+
+    if (isError) {
+      throw new Error(isError.message);
+    }
+
+    return redirect("/admin/sign-in");
+  }
 
   const { data, error } = await supabase
     .from("admin_account")

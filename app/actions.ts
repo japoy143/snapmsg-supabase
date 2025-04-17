@@ -36,7 +36,9 @@ export const signUpAction = async (formData: FormData) => {
   const {
     error: assignUserError,
   } = //assign to user details
-    await supabase.from("user_details").insert({ auth_user_id: data.user?.id });
+    await supabase
+      .from("user_details")
+      .insert({ auth_user_id: data.user?.id, email: email });
 
   if (assignUserError) {
     console.error(assignUserError.code + " " + assignUserError.message);
