@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { createClient } from "../server";
 
 export async function getAllSubscribers(): Promise<UserDetails[] | null> {
@@ -47,4 +48,41 @@ export async function getFreetierUsers(): Promise<UserDetails[] | null> {
   }
 
   return userDetails?.map((user) => user) ?? [];
+}
+
+export async function updateSubscription(
+  id: number,
+  subscription: "Free Tier" | "Personal" | "Business" | "Block"
+) {
+  const supabase = await createClient();
+
+  let token = 40;
+
+  switch (subscription) {
+    case "Free Tier":
+      break;
+    case "Personal":
+      token = 500;
+      break;
+    case "Business":
+      token = 1200;
+      break;
+    case "Block":
+      token = 0;
+      break;
+    default:
+      token = 40;
+  }
+
+  const { error } = await supabase
+    .from("user_details")
+    .update({ subscription: subscription, tokens: token })
+    .eq("id", id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  revalidatePath("/admin/dashboard/users");
+  return { success: true };
 }

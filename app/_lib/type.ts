@@ -11,6 +11,7 @@ type TagType = {
 
 type ChatScriptsType = {
   id: number;
+  script_title: string;
   scripts: string;
   owner_id: string;
   associated_tags_id: string;
@@ -23,4 +24,18 @@ type UserDetails = {
   company_details: string;
   company_name: string;
   isCompanySet: boolean;
+  subscription: "Free Tier" | "Personal" | "Business";
+  email: string;
+};
+
+type promptStatus = {
+  status: "pending" | "resolve" | "reject";
+  response?: string;
+};
+
+type adminAccountType = {
+  email: string;
+  password?: string;
+  token: string;
+  islogged?: boolean;
 };

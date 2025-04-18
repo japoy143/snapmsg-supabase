@@ -1,7 +1,9 @@
 "use client";
-import { getAllSubscribers } from "@/utils/supabase/admin/subscriber";
+import {
+  getAllSubscribers,
+  updateSubscription,
+} from "@/utils/supabase/admin/subscriber";
 import { useQuery } from "@tanstack/react-query";
-
 import React, { useState } from "react";
 import ArrowDown from "../assets/svgs/arrowdown";
 
@@ -15,6 +17,14 @@ export default function AllSubscriptionList() {
 
   function showOptions(id: number) {
     setOptionId(optionId === id ? undefined : id);
+  }
+
+  async function update(
+    id: number,
+    subscription: "Free Tier" | "Personal" | "Business" | "Block"
+  ) {
+    await updateSubscription(id, subscription);
+    showOptions(id);
   }
 
   return (
@@ -34,13 +44,28 @@ export default function AllSubscriptionList() {
           </div>
           {optionId === user.id && (
             <div className=" absolute bg-white shadow-xl py-4 px-6 flex flex-col right-0 top-10 space-y-2 z-10 ">
-              <button className=" hover:border-b-2 hover:border-black/60">
+              <button
+                onClick={() => update(user.id, "Block")}
+                className=" hover:border-b-2 hover:border-black/60"
+              >
+                Block
+              </button>
+              <button
+                onClick={() => update(user.id, "Free Tier")}
+                className=" hover:border-b-2 hover:border-black/60"
+              >
                 Free Tier
               </button>
-              <button className=" hover:border-b-2 hover:border-black/60">
+              <button
+                onClick={() => update(user.id, "Personal")}
+                className=" hover:border-b-2 hover:border-black/60"
+              >
                 Personal
               </button>
-              <button className=" hover:border-b-2 hover:border-black/60">
+              <button
+                onClick={() => update(user.id, "Business")}
+                className=" hover:border-b-2 hover:border-black/60"
+              >
                 Business
               </button>
             </div>
