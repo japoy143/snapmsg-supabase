@@ -23,7 +23,7 @@ export default function Navigation() {
           Services
         </Link>
         <Link className=" text-[var(--secondary-color)]" href={"#"}>
-          About
+          Plans
         </Link>
         <Link className=" text-[var(--secondary-color)]" href={"#"}>
           Contact

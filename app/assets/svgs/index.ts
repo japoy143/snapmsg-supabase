@@ -7,3 +7,6 @@ export { default as ArrowDown } from "./arrowdown";
 export { default as ActionsMenu } from "./actionsmenu";
 export { default as Logout } from "./logout";
 export { default as Tokens } from "./tokens";
+export { default as PersonalizeSvg } from "./personalize";
+export { default as CustomizableSvg } from "./customizable";
+export { default as IntrgrationsSvg } from "./integrations";
