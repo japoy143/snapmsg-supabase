@@ -10,3 +10,4 @@ export { default as Tokens } from "./tokens";
 export { default as PersonalizeSvg } from "./personalize";
 export { default as CustomizableSvg } from "./customizable";
 export { default as IntrgrationsSvg } from "./integrations";
+export { default as CheckedSvg } from "./checked";

@@ -7,7 +7,7 @@ import React from "react";
 
 export default function ServicesSection() {
   return (
-    <div className="  w-screen bg-purple-50 py-10 px-4">
+    <section className="  w-screen bg-purple-50 py-10 px-4">
       <div className=" grid grid-cols-2 px-8  xl:px-72">
         <h1 className=" text-3xl font-medium">
           Automate Business Response. Elevate Engagement.
@@ -54,6 +54,6 @@ export default function ServicesSection() {
           </p>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
