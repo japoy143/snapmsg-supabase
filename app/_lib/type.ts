@@ -39,3 +39,10 @@ type adminAccountType = {
   token: string;
   islogged?: boolean;
 };
+
+type messagesType = {
+  id: string;
+  firstname: string;
+  email: string;
+  message: string;
+};

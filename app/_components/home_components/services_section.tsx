@@ -7,7 +7,7 @@ import React from "react";
 
 export default function ServicesSection() {
   return (
-    <section className="  w-screen bg-purple-50 py-10 px-4">
+    <section id="services" className="  w-screen bg-purple-50 py-10 px-4">
       <div className=" grid grid-cols-2 px-8  xl:px-72">
         <h1 className=" text-3xl font-medium">
           Automate Business Response. Elevate Engagement.
@@ -20,7 +20,7 @@ export default function ServicesSection() {
         </div>
       </div>
 
-      <div className=" mt-8 grid grid-cols-3  px-8  xl:px-96  gap-2">
+      <div className=" mt-8 grid grid-cols-1 sm:grid-cols-3  px-8  xl:px-96  gap-2">
         <div className=" bg-white shadow-lg p-4">
           <PersonalizeSvg className=" size-6 text-[var(--primary-color)]" />
           <h1 className=" mt-2  font-bold">Personalize Ai Assisted</h1>

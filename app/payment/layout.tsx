@@ -1,6 +1,5 @@
 import "../_styles/globals.css";
-import Navigation from "../_components/navigation";
-import Footer from "../_components/home_components/footer";
+
 import { ToastContainer } from "react-toastify";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -22,9 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ToastContainer />
-        <Navigation />
         {children}
-        <Footer />
       </body>
     </html>
   );

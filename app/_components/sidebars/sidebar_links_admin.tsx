@@ -2,7 +2,13 @@
 import React from "react";
 import LogoHeader from "../logo-header";
 import DashboardLinks from "../dashboard/dashboard_links";
-import { Stack, Tags, Response, ChatScripts } from "../../assets/svgs";
+import {
+  Stack,
+  Tags,
+  Response,
+  ChatScripts,
+  MessageSvg,
+} from "../../assets/svgs";
 import { usePathname } from "next/navigation";
 import Users from "@/app/assets/svgs/users";
 
@@ -26,6 +32,13 @@ export default function SideBarLinksAdmin() {
           icon={<Users className="size-6" />}
           linkName="Users"
           href="/admin/dashboard/users"
+        />
+
+        <DashboardLinks
+          isActive={pathName === "/admin/dashboard/message"}
+          icon={<MessageSvg className="size-6" />}
+          linkName="Message"
+          href="/admin/dashboard/message"
         />
       </div>
     </>

@@ -1,17 +1,13 @@
 import { CheckedSvg } from "@/app/assets/svgs";
+import Link from "next/link";
 import React from "react";
 
-export default function PlansSection() {
+export default function page() {
   return (
-    <section id="plans" className=" p-10 w-screen">
-      <div className=" xl:px-96">
-        <h1 className=" font-bold text-3xl">Plans Pricing</h1>
-        <p className=" text-black/50 font-medium">
-          Snapmsg pricing plan are designed to help you grow your business
-        </p>
-      </div>
+    <div className="p-8">
+      <h1 className=" font-bold">Upgrade Plan</h1>
+      <p>Snapmsg pricing plan are designed to help you grow your business</p>
 
-      {/* card plans */}
       <div className=" grid grid-cols-1 sm:grid-cols-3 gap-2 xl:px-96 mt-10">
         <div className=" p-4 border-black/30 border-2 rounded-lg  col-span-1 shadow-lg text-justify space-y-8 flex flex-col justify-between">
           <div className=" space-y-1">
@@ -48,7 +44,7 @@ export default function PlansSection() {
             </div>
           </div>
           <button className=" w-full py-4  rounded-lg text-white  bg-[var(--primary-color)]">
-            Get Started
+            Free
           </button>
         </div>
         <div className=" p-4 border-black/30 border-2 rounded-lg  col-span-1 shadow-lg text-justify space-y-8 flex flex-col justify-between">
@@ -94,9 +90,12 @@ export default function PlansSection() {
               </div>
             </div>
           </div>
-          <button className=" w-full py-4  rounded-lg text-white  bg-[var(--primary-color)]">
+          <Link
+            className=" text-center w-full py-4  rounded-lg text-white  bg-[var(--primary-color)]"
+            href={"/protected/payment-gateway/12"}
+          >
             Subscribe
-          </button>
+          </Link>
         </div>
 
         <div className=" p-4 border-black/30 border-2 rounded-lg  col-span-1 shadow-lg text-justify space-y-8 flex flex-col justify-between">
@@ -137,11 +136,14 @@ export default function PlansSection() {
               </div>
             </div>
           </div>
-          <button className=" w-full py-4  rounded-lg text-white  bg-[var(--primary-color)]">
+          <Link
+            className=" text-center w-full py-4  rounded-lg text-white  bg-[var(--primary-color)]"
+            href={"/protected/payment-gateway/5"}
+          >
             Subscribe
-          </button>
+          </Link>
         </div>
       </div>
-    </section>
+    </div>
   );
 }
