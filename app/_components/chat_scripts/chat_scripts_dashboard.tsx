@@ -44,6 +44,9 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
     <div>{tagError.message}</div>;
   }
 
+  /*
+Functions
+  */
   function associateTag(tag: string) {
     //from json
     const parsedTag: TagType = JSON.parse(tag);

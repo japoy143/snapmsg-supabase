@@ -26,6 +26,7 @@ type UserDetails = {
   isCompanySet: boolean;
   subscription: "Free Tier" | "Personal" | "Business";
   email: string;
+  response_uses: number;
 };
 
 type promptStatus = {

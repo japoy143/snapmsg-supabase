@@ -21,14 +21,19 @@ export async function setUserIdCookie(id: string) {
   cookie.set(user_token_id, id);
 }
 
-export async function decrementUserFreeToken(id: string, free_token: number) {
+export async function decrementUserFreeToken(
+  id: string,
+  free_token: number,
+  response_uses: number
+) {
   const supabase = await createClient();
 
   //decrement the free tokens
   const decrement = free_token - 1;
+  const increment_responses_used = response_uses + 1;
   const { data, error } = await supabase
     .from("user_details")
-    .update({ tokens: decrement })
+    .update({ tokens: decrement, response_uses: increment_responses_used })
     .eq("auth_user_id", id);
 
   if (error) {

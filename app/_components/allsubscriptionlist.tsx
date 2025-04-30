@@ -8,6 +8,7 @@ import React, { useState } from "react";
 import ArrowDown from "../assets/svgs/arrowdown";
 
 export default function AllSubscriptionList() {
+  // subscription list  query
   const { isPending, isError, data, error } = useQuery({
     queryKey: ["subscriptionlist"],
     queryFn: () => getAllSubscribers(),
@@ -15,6 +16,7 @@ export default function AllSubscriptionList() {
 
   const [optionId, setOptionId] = useState<number | undefined>(undefined);
 
+  //Functions
   function showOptions(id: number) {
     setOptionId(optionId === id ? undefined : id);
   }

@@ -1,6 +1,5 @@
 "use client";
 import convertToSubcurrency from "@/lib/convertToSubcurrency";
-import { upgradeToken } from "@/utils/supabase/admin/payment";
 
 import {
   PaymentElement,

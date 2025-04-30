@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
 export default function TagList({ id }: { id: string }) {
+  //all tags query
   const {
     isPending: isTagsPending,
     isError: isTagsError,
@@ -18,6 +19,7 @@ export default function TagList({ id }: { id: string }) {
     queryFn: () => getAllTags(id),
   });
 
+  //all scripts query
   const {
     isPending: isScriptPending,
     isError: isScriptError,
@@ -32,6 +34,7 @@ export default function TagList({ id }: { id: string }) {
   const searchParams = useSearchParams();
   const search = searchParams.get("search")?.toLowerCase() ?? "";
 
+  //pending and error handlers
   if (isTagsPending && isScriptPending) {
     return <span>Loading...</span>;
   }
@@ -44,6 +47,9 @@ export default function TagList({ id }: { id: string }) {
     );
   }
 
+  /*
+  Functions
+  */
   function showAllAssociatedScripts(id: number) {
     try {
       const filterScripts = scriptData?.filter((script) =>

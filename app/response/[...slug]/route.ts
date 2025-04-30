@@ -166,7 +166,7 @@ export async function GET(
   }
 
   const [decrement, newval] = await Promise.all([
-    decrementUserFreeToken(user.auth_user_id, user.tokens),
+    decrementUserFreeToken(user.auth_user_id, user.tokens, user.response_uses),
     setNewApiCounter(api_counter),
   ]);
 

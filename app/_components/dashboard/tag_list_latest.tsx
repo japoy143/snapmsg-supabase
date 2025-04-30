@@ -2,7 +2,6 @@
 import { getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { array } from "zod";
 
 export default function TagListLatest({ id }: { id: string }) {
   const { isPending, isError, data, error } = useQuery({

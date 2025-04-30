@@ -2,13 +2,7 @@
 import React from "react";
 import LogoHeader from "../logo-header";
 import DashboardLinks from "../dashboard/dashboard_links";
-import {
-  Stack,
-  Tags,
-  Response,
-  ChatScripts,
-  MessageSvg,
-} from "../../assets/svgs";
+import { Stack, MessageSvg } from "../../assets/svgs";
 import { usePathname } from "next/navigation";
 import Users from "@/app/assets/svgs/users";
 

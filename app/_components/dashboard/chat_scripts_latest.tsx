@@ -1,7 +1,7 @@
 "use client";
 import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 import { useQuery } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React from "react";
 
 export default function ChatScriptsLatest({ id }: { id: string }) {
   const { isPending, isError, data, error } = useQuery({
@@ -9,6 +9,7 @@ export default function ChatScriptsLatest({ id }: { id: string }) {
     queryFn: () => getAllChatScripts(id),
   });
 
+  //show pending state
   if (isPending) {
     return Array.from({ length: 5 }).map((_, index) => {
       return (

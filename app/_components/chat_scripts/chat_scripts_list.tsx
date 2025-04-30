@@ -49,6 +49,9 @@ export default function ChatScriptsList({ id }: { id: string }) {
     );
   }
 
+  /* 
+  Functions
+  */
   function showAllAssociatedTags(ids: string) {
     try {
       const tagIds: number[] = JSON.parse(ids);

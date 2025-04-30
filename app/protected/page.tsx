@@ -82,7 +82,7 @@ export default async function ProtectedPage() {
               headingName="Total Response"
             />
             <h1 className=" text-center text-4xl font-medium ">
-              {40 - data.tokens}
+              {data.response_uses}
             </h1>
           </DashboardCards>
         </DashboardCardsWrapper>

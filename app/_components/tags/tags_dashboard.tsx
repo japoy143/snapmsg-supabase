@@ -41,7 +41,7 @@ export default function TagDashboard({ id }: { id: string }) {
     }
   }
 
-  //use react query
+  //tag latest query
   const {
     isPending: isTagsPending,
     isError: isTagsError,
@@ -52,6 +52,7 @@ export default function TagDashboard({ id }: { id: string }) {
     queryFn: () => getLatestTags(5, id),
   });
 
+  //pending and error handlers
   if (isTagsPending) {
     return <div>...Loading</div>;
   }

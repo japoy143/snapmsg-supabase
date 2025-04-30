@@ -1,6 +1,5 @@
 import PaymentGateway from "@/app/_components/payment/payment-gateway";
 import { createClient } from "@/utils/supabase/server";
-import { error } from "console";
 import { redirect } from "next/navigation";
 
 export default async function page({

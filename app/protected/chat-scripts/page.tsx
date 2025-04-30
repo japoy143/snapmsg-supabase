@@ -5,7 +5,6 @@ import React from "react";
 import ChatScriptsList from "../../_components/chat_scripts/chat_scripts_list";
 import {
   dehydrate,
-  hydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
