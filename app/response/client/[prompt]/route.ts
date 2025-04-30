@@ -10,8 +10,8 @@ const ai = new GoogleGenAI({ apiKey: process.env["GEMINI_API_KEY1"] });
 const cookie_auth_key = process.env["COOKIE_KEY"] ?? "";
 
 export async function GET(
-  req: Response,
-  { params }: { params: { prompt: string } }
+  req: Request,
+  { params }: { params: Promise<{ prompt: string }> }
 ) {
   const { prompt } = await params;
   const isTokenAlreadyExist = await isTokenExist(cookie_auth_key);
