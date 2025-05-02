@@ -9,6 +9,7 @@ import { getAllTags } from "@/utils/supabase/tags";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
+import { getUserId } from "@/utils/supabase/users";
 
 type errorField = {
   script_title?: string[] | undefined;
@@ -16,7 +17,7 @@ type errorField = {
   associated_tags?: string[] | undefined;
 };
 
-export default function ChatScriptsDashboard({ id }: { id: string }) {
+export default function ChatScriptsDashboard() {
   const queryClient = useQueryClient();
 
   //states
@@ -33,6 +34,16 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
   const [updateId, setUpdateId] = useState<number>(0);
 
   const {
+    isPending: isUserIdPending,
+    isError: isUserIdError,
+    data: userId,
+    error: userIdError,
+  } = useQuery({
+    queryKey: ["getuserid"],
+    queryFn: getUserId,
+  });
+
+  const {
     isPending: isTagPending,
     isError: isTagError,
     data: tagsData,
@@ -40,6 +51,7 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
   } = useQuery({
     queryKey: ["taglist"],
     queryFn: () => getAllTags(id),
+    enabled: !!userId,
   });
 
   const mutation = useMutation({

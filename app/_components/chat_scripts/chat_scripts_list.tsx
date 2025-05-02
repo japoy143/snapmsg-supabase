@@ -10,12 +10,23 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 import { useSearchParams } from "next/navigation";
+import { getUserId } from "@/utils/supabase/users";
 
-export default function ChatScriptsList({ id }: { id: string }) {
+export default function ChatScriptsList() {
   const queryClient = useQueryClient();
   const [scriptId, setScriptId] = useState<number | undefined>();
   const searchParams = useSearchParams();
   const search = searchParams.get("search")?.toLowerCase() ?? "";
+
+  const {
+    isPending: isUserIdPending,
+    isError: isUserIdError,
+    data: userId,
+    error: userIdError,
+  } = useQuery({
+    queryKey: ["getuserid"],
+    queryFn: getUserId,
+  });
 
   const {
     isPending: isTagPending,
@@ -24,7 +35,8 @@ export default function ChatScriptsList({ id }: { id: string }) {
     error: tagError,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: () => getAllTags(id),
+    queryFn: () => getAllTags(userId ?? ""),
+    enabled: !!userId,
   });
 
   const {
@@ -34,7 +46,8 @@ export default function ChatScriptsList({ id }: { id: string }) {
     error: scriptError,
   } = useQuery({
     queryKey: ["scriptlist"],
-    queryFn: () => getAllChatScripts(id),
+    queryFn: () => getAllChatScripts(userId ?? ""),
+    enabled: !!userId,
   });
 
   const deleteMutation = useMutation({

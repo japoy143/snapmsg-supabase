@@ -16,7 +16,7 @@ export async function getAuthUser() {
   if (!user) {
     return redirect("/sign-in");
   }
-  console.log(user);
+
   return user;
 }
 

@@ -3,11 +3,21 @@ import ActionsMenu from "@/app/assets/svgs/actionsmenu";
 import EventEmitter from "@/utils/EventEmitter";
 import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 import { deleteTag, getAllTags } from "@/utils/supabase/tags";
+import { getUserId } from "@/utils/supabase/users";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
-export default function TagList({ id }: { id: string }) {
+export default function TagList() {
+  const {
+    isPending: isUserIdPending,
+    isError: isUserIdError,
+    data: userId,
+    error: userIdError,
+  } = useQuery({
+    queryKey: ["getuserid"],
+    queryFn: getUserId,
+  });
   //all tags query
   const {
     isPending: isTagsPending,
@@ -16,7 +26,8 @@ export default function TagList({ id }: { id: string }) {
     error: errorTag,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: () => getAllTags(id),
+    queryFn: () => getAllTags(userId ?? ""),
+    enabled: !!userId,
   });
 
   //all scripts query
@@ -27,7 +38,8 @@ export default function TagList({ id }: { id: string }) {
     error: errorScript,
   } = useQuery({
     queryKey: ["scriptlist"],
-    queryFn: () => getAllChatScripts(id),
+    queryFn: () => getAllChatScripts(userId ?? ""),
+    enabled: !!userId,
   });
 
   const [scriptId, setScriptId] = useState<number | null>();

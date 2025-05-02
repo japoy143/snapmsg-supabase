@@ -9,9 +9,9 @@ export default async function ProtectedPage() {
   return (
     <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)] z-0  relative ">
       {/* Custom Modal */}
-      <ShowModal id={user.id} />
+      <ShowModal />
       <SearchBar name=" Dashboard" isSearchVisible="hidden" />
-      <StatsDashboard id={user.id} />
+      <StatsDashboard />
     </div>
   );
 }

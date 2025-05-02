@@ -6,13 +6,11 @@ import TagList from "@/app/_components/tags/tag_list";
 import { getAuthUser } from "@/utils/supabase/users";
 
 export default async function page() {
-  const user = await getAuthUser();
-
   return (
     <div className="flex-1 w-full h-screen flex flex-col bg-[var(--dashboard-background-color)] ">
       <SearchBar name="Tags" />
       <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
-        <TagDashboard id={user.id} />
+        <TagDashboard />
 
         <DashboardCard>
           <h1 className=" font-medium ">All Tags</h1>
@@ -29,7 +27,7 @@ export default async function page() {
               </div>
             </div>
 
-            <TagList id={user.id} />
+            <TagList />
           </div>
         </DashboardCard>
       </div>

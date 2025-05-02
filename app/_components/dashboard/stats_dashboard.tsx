@@ -10,9 +10,19 @@ import TagListLatest from "./tag_list_latest";
 import { getAllChatScripts } from "@/utils/supabase/chatscripts";
 import { getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
-import { getUserDetails } from "@/utils/supabase/users";
+import { getUserDetails, getUserId } from "@/utils/supabase/users";
 import { ChatScripts, Tags, Response } from "../../assets/svgs";
-export default function StatsDashboard({ id }: { id: string }) {
+export default function StatsDashboard() {
+  const {
+    isPending: isUserIdPending,
+    isError: isUserIdError,
+    data: userId,
+    error: userIdError,
+  } = useQuery({
+    queryKey: ["getuserid"],
+    queryFn: getUserId,
+  });
+
   const {
     isPending: isUserPending,
     isError: isUserError,
@@ -20,8 +30,8 @@ export default function StatsDashboard({ id }: { id: string }) {
     error: userDetailsError,
   } = useQuery({
     queryKey: ["userDetails"],
-    queryFn: () => getUserDetails(id),
-    enabled: !!id,
+    queryFn: () => getUserDetails(userId ?? ""),
+    enabled: !!userId,
   });
 
   const {
@@ -31,8 +41,8 @@ export default function StatsDashboard({ id }: { id: string }) {
     error: tagError,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: () => getAllTags(id),
-    enabled: !!id,
+    queryFn: () => getAllTags(userId ?? ""),
+    enabled: !!userId,
   });
 
   const {
@@ -42,8 +52,8 @@ export default function StatsDashboard({ id }: { id: string }) {
     error: scriptError,
   } = useQuery({
     queryKey: ["scriptlist"],
-    queryFn: () => getAllChatScripts(id),
-    enabled: !!id,
+    queryFn: () => getAllChatScripts(userId ?? ""),
+    enabled: !!userId,
   });
 
   if (isScriptPending || isTagPending || isUserPending) {

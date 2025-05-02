@@ -1,34 +1,57 @@
 "use client";
-import React, { useActionState, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardButton from "./dashboard/dashboard_button";
 import { provideCompanyDetails } from "@/utils/supabase/dashboard";
 import FormErrors from "./formerrors";
 import { toast } from "react-toastify";
-import { useQuery } from "@tanstack/react-query";
-import { getUserDetails } from "@/utils/supabase/users";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getUserDetails, getUserId } from "@/utils/supabase/users";
 
+type errorField = {
+  company_name?: string[] | undefined;
+  company_details?: string[] | undefined;
+};
 interface ShowModalProps {
   id: string;
 }
 
-export default function ShowModal({ id }: ShowModalProps) {
-  const [state, action] = useActionState(provideCompanyDetails, null);
+export default function ShowModal() {
+  const [statusState, setStatusState] = useState<{
+    success?: boolean;
+    error?: errorField;
+  }>();
   const [isCompanySet, setIsCompanySet] = useState(false);
   function close() {
     setIsCompanySet(true);
   }
 
-  //toastlisteners
-  useEffect(() => {
-    if (state?.success) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({ state, formData }: { state: any; formData: FormData }) =>
+      provideCompanyDetails(state, formData),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["userDetails"] });
+
       toast("Successfully provided company details", { type: "success" });
       setIsCompanySet(true);
-    }
-  }, [state?.success]);
+    },
+  });
+
+  const {
+    isPending: isUserIdPending,
+    isError: isUserIdError,
+    data: userId,
+    error: userIdError,
+  } = useQuery({
+    queryKey: ["getuserid"],
+    queryFn: getUserId,
+  });
 
   const { isPending, isError, data, error } = useQuery({
-    queryFn: () => getUserDetails(id),
+    queryFn: () => getUserDetails(userId ?? ""),
     queryKey: ["userDetails"],
+    enabled: !!userId,
   });
 
   useEffect(() => {
@@ -41,16 +64,29 @@ export default function ShowModal({ id }: ShowModalProps) {
     return null; // or a spinner
   }
 
+  /*
+  Functions
+  */
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    try {
+      const formData = new FormData(event.currentTarget);
+      await mutation.mutateAsync({ state: statusState, formData });
+    } catch (e) {
+      setStatusState({ success: false });
+    }
+  }
+
   return (
     <>
       {!isCompanySet && (
         <div className=" z-50 h-full w-full   flex  justify-center items-center absolute ">
           <form
-            action={action}
             className="p-4 bg-slate-50 shadow-lg h-[400px] w-[600px] flex flex-col space-y-2"
+            onSubmit={handleSubmit}
           >
             <h1 className=" font-medium text-lg">Company background </h1>
-            <input type="hidden" name="id" value={id} />
+            <input type="hidden" name="id" value={userId} />
             <div>
               <label htmlFor="company name" className=" font-medium  text-sm">
                 Company Name
@@ -64,7 +100,8 @@ export default function ShowModal({ id }: ShowModalProps) {
               />
               <FormErrors
                 error={
-                  state?.error?.company_name && state?.error?.company_name[0]
+                  statusState?.error?.company_name &&
+                  statusState?.error?.company_name[0]
                 }
               />
             </div>
@@ -84,8 +121,8 @@ export default function ShowModal({ id }: ShowModalProps) {
               ></textarea>
               <FormErrors
                 error={
-                  state?.error?.company_details &&
-                  state?.error?.company_details[0]
+                  statusState?.error?.company_details &&
+                  statusState?.error?.company_details[0]
                 }
               />
             </div>

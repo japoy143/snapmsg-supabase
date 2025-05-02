@@ -14,7 +14,7 @@ export default function LogoHeader({ color = "form" }: logoColor) {
       <Logo className="size-6" />
       {/* custom fonts  */}
       <Link href={"/"} className="text-md font-semi-bold">
-        SnagMsg
+        SnapMsg
       </Link>
     </div>
   );

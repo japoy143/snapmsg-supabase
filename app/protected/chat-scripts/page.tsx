@@ -6,12 +6,11 @@ import ChatScriptsList from "../../_components/chat_scripts/chat_scripts_list";
 import { getAuthUser } from "@/utils/supabase/users";
 
 export default async function page() {
-  const user = await getAuthUser();
   return (
     <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)]">
       <SearchBar name="Chat Scripts" />
       <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4">
-        <ChatScriptsDashboard id={user.id} />
+        <ChatScriptsDashboard />
 
         <DashboardCard>
           <h1 className=" font-medium ">All Chat Scripts</h1>
@@ -31,7 +30,7 @@ export default async function page() {
               </div>
             </div>
 
-            <ChatScriptsList id={user.id} />
+            <ChatScriptsList />
           </div>
         </DashboardCard>
       </div>

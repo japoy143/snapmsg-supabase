@@ -27,7 +27,7 @@ export async function provideCompanyDetails(state: any, formData: FormData) {
       company_details: formData.get("company_details"),
       isCompanySet: true,
     })
-    .eq("id", formData.get("id"));
+    .eq("auth_user_id", formData.get("id"));
 
   revalidatePath("/protected");
   return { success: true };

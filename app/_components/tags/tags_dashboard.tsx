@@ -17,12 +17,13 @@ import FormErrors from "../formerrors";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
+import { getUserId } from "@/utils/supabase/users";
 
 type errorField = {
   tagname?: string[] | undefined;
 };
 
-export default function TagDashboard({ id }: { id: string }) {
+export default function TagDashboard() {
   const [statusState, setStatusState] = useState<{
     success?: boolean;
     errorField?: errorField;
@@ -50,6 +51,16 @@ export default function TagDashboard({ id }: { id: string }) {
     }
   }
 
+  const {
+    isPending: isUserIdPending,
+    isError: isUserIdError,
+    data: userId,
+    error: userIdError,
+  } = useQuery({
+    queryKey: ["getuserid"],
+    queryFn: getUserId,
+  });
+
   //tag latest query
   const {
     isPending: isTagsPending,
@@ -58,7 +69,8 @@ export default function TagDashboard({ id }: { id: string }) {
     error: tagError,
   } = useQuery({
     queryKey: ["taglatest"],
-    queryFn: () => getLatestTags(5, id),
+    queryFn: () => getLatestTags(5, userId ?? ""),
+    enabled: !!userId,
   });
 
   const addMutation = useMutation({

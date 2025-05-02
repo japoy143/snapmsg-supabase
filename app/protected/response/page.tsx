@@ -7,8 +7,6 @@ import { getAuthUser } from "@/utils/supabase/users";
 import React from "react";
 
 export default async function page() {
-  const user = await getAuthUser();
-
   return (
     <div className="flex-1 w-full h-full flex flex-col bg-[var(--dashboard-background-color)]">
       <SearchBar name="Response" isSearchVisible="hidden" />
