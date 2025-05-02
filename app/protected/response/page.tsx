@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { DashboardCard } from "@/app/_components/dashboard";
 import MessageResponse from "@/app/_components/response/message_response";
 import ResponseDashboard from "@/app/_components/response/response_dashboard";

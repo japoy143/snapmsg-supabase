@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { DashboardCard } from "@/app/_components/dashboard";
 import SearchBar from "@/app/_components/search-bar";
 import React from "react";

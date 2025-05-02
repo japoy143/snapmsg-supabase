@@ -50,7 +50,7 @@ export default function ChatScriptsDashboard() {
     error: tagError,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: () => getAllTags(id),
+    queryFn: () => getAllTags(userId ?? ''),
     enabled: !!userId,
   });
 

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { DashboardCard } from "@/app/_components/dashboard";
 import ChatScriptsDashboard from "@/app/_components/chat_scripts/chat_scripts_dashboard";
 import SearchBar from "@/app/_components/search-bar";

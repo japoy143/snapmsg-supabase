@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import SearchBar from "../_components/search-bar";
 import ShowModal from "../_components/showmodal";
 import { getAuthUser } from "@/utils/supabase/users";
