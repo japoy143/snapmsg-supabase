@@ -2,7 +2,39 @@
 
 import { cookies } from "next/headers";
 import { createClient } from "./server";
-import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { data } from "autoprefixer";
+
+//GET AUTH USER THEN REDIRECT
+export async function getAuthUser() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return redirect("/sign-in");
+  }
+  console.log(user);
+  return user;
+}
+
+//GET USER DETAILS
+export async function getUserDetails(id: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("user_details")
+    .select("*")
+    .eq("auth_user_id", id)
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  console.log(data);
+  return data;
+}
 
 //GET USER
 export async function getUserId() {

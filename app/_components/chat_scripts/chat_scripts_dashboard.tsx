@@ -1,24 +1,30 @@
 "use client";
-import React, {
-  startTransition,
-  useActionState,
-  useEffect,
-  useState,
-} from "react";
+import React, { useEffect, useState } from "react";
 import DashboardButton from "../dashboard/dashboard_button";
 import DashboardCards from "../dashboard/dashboard_cards";
 import DashboardCardsWrapper from "../dashboard/dashboard_cards_wrapper";
 import { addScript, updateChatScripts } from "@/utils/supabase/chatscripts";
 import FormErrors from "../formerrors";
 import { getAllTags } from "@/utils/supabase/tags";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 
+type errorField = {
+  script_title?: string[] | undefined;
+  scripts?: string[] | undefined;
+  associated_tags?: string[] | undefined;
+};
+
 export default function ChatScriptsDashboard({ id }: { id: string }) {
-  //actions
-  const [state, action] = useActionState(addScript, null);
+  const queryClient = useQueryClient();
+
   //states
+  const [statusState, setStatusState] = useState<{
+    success?: boolean;
+    errorField?: errorField;
+  }>({ success: false, errorField: undefined });
+
   const [script, setScript] = useState<string>("");
   const [script_title, setScriptTitle] = useState<string>("");
   const [selectedTag, setSelectedTag] = useState<TagType | undefined>();
@@ -36,17 +42,103 @@ export default function ChatScriptsDashboard({ id }: { id: string }) {
     queryFn: () => getAllTags(id),
   });
 
+  const mutation = useMutation({
+    mutationFn: ({
+      state,
+      formData,
+    }: {
+      state: {
+        success?: boolean;
+        errorField?: errorField;
+      };
+      formData: FormData;
+    }) => addScript(state, formData),
+    onSuccess: (data, variables) => {
+      queryClient.invalidateQueries({ queryKey: ["taglist"] });
+      queryClient.invalidateQueries({ queryKey: ["scriptlist"] });
+
+      toast("Successfully added new scripts", {
+        type: "success",
+      });
+      //clear states
+      clear();
+      // Use returned result from addScript to update state
+      setStatusState({
+        success: data.success,
+        errorField: data.errorField,
+      });
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({
+      id,
+      script_title,
+      script,
+      associated_tags_id,
+    }: {
+      id: number;
+      script_title: string;
+      script: string;
+      associated_tags_id: string;
+    }) => updateChatScripts(id, script_title, script, associated_tags_id),
+
+    onSuccess(data, variables, context) {
+      queryClient.invalidateQueries({ queryKey: ["taglist"] });
+      queryClient.invalidateQueries({ queryKey: ["scriptlist"] });
+
+      if (data) {
+        toast("Successfully updated script", { type: "success" });
+        clear();
+        EventEmitter.emit("clear");
+      } else {
+        toast("Failed to update script", { type: "error" });
+      }
+    },
+  });
+
+  //Toast
+  useEffect(() => {
+    //set update state
+    const sample = (data: any) => {
+      setIsUpdate(true);
+      setScriptTitle(data.script_title);
+      setScript(data.scriptname);
+      setAssociatedTags(data.associated_tag);
+      setUpdateId(data.id);
+    };
+
+    const listener = EventEmitter.addListener("update", sample);
+
+    if (!statusState.success) return;
+
+    return () => {
+      EventEmitter.off("update", sample);
+    };
+  }, [statusState?.success]);
+
   if (isTagPending) {
-    <div>...Loading</div>;
+    return <div>...Loading</div>;
   }
 
   if (isTagError) {
-    <div>{tagError.message}</div>;
+    return <div>{tagError.message}</div>;
   }
 
   /*
 Functions
   */
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      mutation.mutate({ state: statusState, formData });
+    } catch (e) {
+      setStatusState({ success: false });
+    }
+  }
+
   function associateTag(tag: string) {
     //from json
     const parsedTag: TagType = JSON.parse(tag);
@@ -79,55 +171,21 @@ Functions
     script: string,
     associated_tags_id: string
   ) {
-    const { success } = await updateChatScripts(
+    await updateMutation.mutateAsync({
       id,
       script_title,
       script,
-      associated_tags_id
-    );
-
-    if (success) {
-      toast("Successfully updated script", { type: "success" });
-      clear();
-      EventEmitter.emit("clear");
-    } else {
-      toast("Failed update script", { type: "error" });
-    }
-  }
-
-  //Toast
-  useEffect(() => {
-    //set update state
-    const sample = (data: any) => {
-      setIsUpdate(true);
-      setScriptTitle(data.script_title);
-      setScript(data.scriptname);
-      setAssociatedTags(data.associated_tag);
-      setUpdateId(data.id);
-    };
-
-    const listener = EventEmitter.addListener("update", sample);
-
-    if (!state?.success) return;
-
-    startTransition(() => {
-      toast("Successfully added new scripts", {
-        type: "success",
-      });
-      //clear states
-      clear();
-      action("RESET");
+      associated_tags_id,
     });
-
-    return () => {
-      EventEmitter.off("update", sample);
-    };
-  }, [state?.success]);
+  }
 
   return (
     <DashboardCardsWrapper isCards="card">
       <DashboardCards>
-        <form action={action} className="w-full h-full grid grid-cols-2 gap-2">
+        <form
+          onSubmit={handleSubmit}
+          className="w-full h-full grid grid-cols-2 gap-2"
+        >
           <div className="flex h-full w-full flex-col">
             <h1 className=" font-medium">Script Title</h1>
             <input
@@ -148,7 +206,10 @@ Functions
               ></textarea>
             </div>
             <FormErrors
-              error={state?.errorField?.scripts && state.errorField.scripts[0]}
+              error={
+                statusState?.errorField?.scripts &&
+                statusState.errorField.scripts[0]
+              }
             />
           </div>
 
@@ -173,8 +234,8 @@ Functions
               </select>
               <FormErrors
                 error={
-                  state?.errorField?.associated_tags &&
-                  state.errorField.associated_tags[0]
+                  statusState?.errorField?.associated_tags &&
+                  statusState.errorField.associated_tags[0]
                 }
               />
             </div>

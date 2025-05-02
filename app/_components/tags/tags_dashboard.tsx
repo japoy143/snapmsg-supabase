@@ -14,12 +14,21 @@ import {
 import { Tags } from "@/app/assets/svgs";
 import { addTags, getLatestTags, updateTag } from "@/utils/supabase/tags";
 import FormErrors from "../formerrors";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 
+type errorField = {
+  tagname?: string[] | undefined;
+};
+
 export default function TagDashboard({ id }: { id: string }) {
-  const [state, action] = useActionState(addTags, null);
+  const [statusState, setStatusState] = useState<{
+    success?: boolean;
+    errorField?: errorField;
+  }>();
+
+  const queryClient = useQueryClient();
   const [tagname, setTagname] = useState<string>("");
   const [isUpdate, setIsUpdate] = useState<boolean>(false);
   const [tagId, setTagId] = useState<number>(0);
@@ -52,13 +61,27 @@ export default function TagDashboard({ id }: { id: string }) {
     queryFn: () => getLatestTags(5, id),
   });
 
-  //pending and error handlers
-  if (isTagsPending) {
-    return <div>...Loading</div>;
-  }
+  const addMutation = useMutation({
+    mutationFn: ({ state, formData }: { state: any; formData: FormData }) =>
+      addTags(state, formData),
 
-  if (isTagsError) {
-    <div>{tagError.message}</div>;
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["taglist"] });
+      toast("Successfully added", { type: "success" });
+
+      clear();
+    },
+  });
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    try {
+      const formData = new FormData(event.currentTarget);
+      await addMutation.mutateAsync({ state: statusState, formData });
+    } catch (e) {
+      setStatusState({ success: false });
+    }
   }
 
   //Toast handler
@@ -71,20 +94,22 @@ export default function TagDashboard({ id }: { id: string }) {
 
     const listener = EventEmitter.addListener("updateTag", updateState);
 
-    if (!state?.success) return;
-
-    //show toast and clear state
-    startTransition(() => {
-      toast("Successfully added", { type: "success" });
-      action("RESET");
-      clear();
-    });
+    if (!statusState?.success) return;
 
     //clear listener and useEffect
     return () => {
       EventEmitter.off("updateTag", updateState);
     };
-  }, [state?.success]);
+  }, [statusState?.success]);
+
+  //pending and error handlers
+  if (isTagsPending) {
+    return <div>...Loading</div>;
+  }
+
+  if (isTagsError) {
+    return <div>{tagError.message}</div>;
+  }
 
   return (
     <>
@@ -112,7 +137,7 @@ export default function TagDashboard({ id }: { id: string }) {
         <DashboardCards className="col-span-4 md:col-span-2">
           <h1 className="font-medium">Add Tags</h1>
           <form
-            action={action}
+            onSubmit={handleSubmit}
             id="formId"
             className="w-full h-[40px] border-2  border-black/60 rounded"
           >
@@ -125,8 +150,8 @@ export default function TagDashboard({ id }: { id: string }) {
               onChange={(e) => setTagname(e.target.value)}
             />
             <div className=" w-full text-right">
-              {state?.errorField?.tagname && (
-                <FormErrors error={state.errorField.tagname[0]} />
+              {statusState?.errorField?.tagname && (
+                <FormErrors error={statusState.errorField.tagname[0]} />
               )}
             </div>
           </form>

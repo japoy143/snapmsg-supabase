@@ -1,12 +1,18 @@
-export const metadata = {
-  title: "SnapMsg",
-  description: "Integrate your business with professional ai assisted response",
-};
 import "../_styles/globals.css";
 import Provider from "@/utils/Providers";
 import { ToastContainer } from "react-toastify";
 import SideBarLarge from "../_components/sidebars/sidebar_large";
 import SidebarSmall from "../_components/sidebars/sidebar_small";
+
+const defaultUrl = process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
+
+export const metadata = {
+  metadataBase: new URL(defaultUrl),
+  title: "SnapMsg",
+  description: "Integrate your business with professional ai assisted response",
+};
 
 export default function RootLayout({
   children,

@@ -62,12 +62,15 @@ const CheckoutPage = ({
       setLoading(false);
       return;
     }
+    const defaultUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}/payment-success?amount=${amount}`
+      : "http://localhost:3000/payment-success?amount=${amount}";
 
     const { error } = await stripe.confirmPayment({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://localhost:3000/payment-success?amount=${amount}`,
+        return_url: defaultUrl,
       },
     });
 

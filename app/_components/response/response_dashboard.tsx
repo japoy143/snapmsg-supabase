@@ -62,6 +62,10 @@ export default function ResponseDashboard() {
     }
   }
 
+  if (isPending) {
+    return <p>...Loading</p>;
+  }
+
   return (
     <>
       <DashboardCardsWrapper isCards="card">

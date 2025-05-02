@@ -4,11 +4,11 @@ import React from "react";
 
 export default function page() {
   return (
-    <div className="p-8">
+    <div className="p-8 overflow-auto">
       <h1 className=" font-bold">Upgrade Plan</h1>
       <p>Snapmsg pricing plan are designed to help you grow your business</p>
 
-      <div className=" grid grid-cols-1 sm:grid-cols-3 gap-2 xl:px-96 mt-10">
+      <div className=" grid grid-cols-1  md:grid-cols-2 lg:grid-cols-3 gap-2  mt-10">
         <div className=" p-4 border-black/30 border-2 rounded-lg  col-span-1 shadow-lg text-justify space-y-8 flex flex-col justify-between">
           <div className=" space-y-1">
             <h2 className=" font-medium text-2xl">Free</h2>

@@ -4,21 +4,19 @@ import DashboardButton from "./dashboard/dashboard_button";
 import { provideCompanyDetails } from "@/utils/supabase/dashboard";
 import FormErrors from "./formerrors";
 import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { getUserDetails } from "@/utils/supabase/users";
 
 interface ShowModalProps {
-  id: number;
-  isset: boolean;
+  id: string;
 }
 
-export default function ShowModal({ id, isset }: ShowModalProps) {
-  const [isCompanySet, setIsCompanySet] = useState(isset);
+export default function ShowModal({ id }: ShowModalProps) {
   const [state, action] = useActionState(provideCompanyDetails, null);
-
+  const [isCompanySet, setIsCompanySet] = useState(false);
   function close() {
     setIsCompanySet(true);
   }
-
-  function save() {}
 
   //toastlisteners
   useEffect(() => {
@@ -27,6 +25,21 @@ export default function ShowModal({ id, isset }: ShowModalProps) {
       setIsCompanySet(true);
     }
   }, [state?.success]);
+
+  const { isPending, isError, data, error } = useQuery({
+    queryFn: () => getUserDetails(id),
+    queryKey: ["userDetails"],
+  });
+
+  useEffect(() => {
+    if (data?.isCompanySet !== undefined) {
+      setIsCompanySet(data.isCompanySet);
+    }
+  }, [data?.isCompanySet]);
+
+  if (isPending) {
+    return null; // or a spinner
+  }
 
   return (
     <>

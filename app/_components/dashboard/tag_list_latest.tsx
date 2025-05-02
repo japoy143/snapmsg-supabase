@@ -3,12 +3,13 @@ import { getAllTags } from "@/utils/supabase/tags";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 
-export default function TagListLatest({ id }: { id: string }) {
-  const { isPending, isError, data, error } = useQuery({
-    queryKey: ["taglist"],
-    queryFn: () => getAllTags(id),
-  });
-
+export default function TagListLatest({
+  data,
+  isPending,
+}: {
+  data: TagType[] | null | undefined;
+  isPending: boolean;
+}) {
   if (isPending) {
     return Array.from({ length: 3 }).map((_, index) => {
       return (

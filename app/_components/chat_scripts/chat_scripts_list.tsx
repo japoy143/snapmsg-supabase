@@ -5,13 +5,14 @@ import {
   getAllChatScripts,
 } from "@/utils/supabase/chatscripts";
 import { getAllTags } from "@/utils/supabase/tags";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import EventEmitter from "@/utils/EventEmitter";
 import { useSearchParams } from "next/navigation";
 
 export default function ChatScriptsList({ id }: { id: string }) {
+  const queryClient = useQueryClient();
   const [scriptId, setScriptId] = useState<number | undefined>();
   const searchParams = useSearchParams();
   const search = searchParams.get("search")?.toLowerCase() ?? "";
@@ -35,6 +36,36 @@ export default function ChatScriptsList({ id }: { id: string }) {
     queryKey: ["scriptlist"],
     queryFn: () => getAllChatScripts(id),
   });
+
+  const deleteMutation = useMutation({
+    mutationFn: ({ id }: { id: number }) => deleteChatScripts(id),
+
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["scriptlist"] });
+      if (data.success) {
+        toast("Successfully deleted script", {
+          type: "success",
+        });
+        EventEmitter.emit("clear");
+      } else {
+        toast("Failed deletion  of script", {
+          type: "error",
+        });
+      }
+    },
+  });
+
+  useEffect(() => {
+    function clear() {
+      setScriptId(undefined);
+    }
+
+    const listener = EventEmitter.addListener("clear", clear);
+
+    return () => {
+      EventEmitter.removeListener("clear", clear);
+    };
+  }, []);
 
   if (isTagPending || isScriptPending) {
     return <div>...Loading</div>;
@@ -87,18 +118,7 @@ export default function ChatScriptsList({ id }: { id: string }) {
   }
 
   async function deleteScript(id: number) {
-    const { success } = await deleteChatScripts(id);
-
-    if (success) {
-      toast("Successfully deleted script", {
-        type: "success",
-      });
-      EventEmitter.emit("clear");
-    } else {
-      toast("Failed deletion  of script", {
-        type: "error",
-      });
-    }
+    await deleteMutation.mutateAsync({ id });
   }
 
   function showUpdate(
@@ -115,18 +135,6 @@ export default function ChatScriptsList({ id }: { id: string }) {
       associated_tag: allTags,
     });
   }
-
-  useEffect(() => {
-    function clear() {
-      setScriptId(undefined);
-    }
-
-    const listener = EventEmitter.addListener("clear", clear);
-
-    return () => {
-      EventEmitter.removeListener("clear", clear);
-    };
-  }, []);
 
   return (
     <>

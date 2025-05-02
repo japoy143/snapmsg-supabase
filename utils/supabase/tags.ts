@@ -63,11 +63,7 @@ ACTIONS
 */
 
 //ADD TAGS
-export async function addTags(state: any, formData: FormData | "RESET") {
-  if (formData === "RESET") {
-    return { success: false };
-  }
-
+export async function addTags(state: any, formData: FormData) {
   const validateResult = TagSchema.safeParse({
     tagname: formData.get("tagname"),
   });
