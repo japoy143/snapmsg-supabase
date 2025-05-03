@@ -1,11 +1,13 @@
-import { signOutAction } from "@/app/actions";
+"use server";
+
 import UserEmail from "@/app/_components/email";
 import FreeTokens from "@/app/_components/free_token";
 import React from "react";
 import SideBarLinks from "./sidebarlinks";
 import Link from "next/link";
+import LogoutButton from "./logout_component";
 
-export default function SideBarLarge() {
+export default async function SideBarLarge() {
   return (
     <>
       <SideBarLinks />
@@ -26,14 +28,7 @@ export default function SideBarLarge() {
           <UserEmail />
         </div>
 
-        <form action={signOutAction}>
-          <button
-            type="submit"
-            className="w-full py-2 bg-white rounded text-center text-[var(--secondary-color)]"
-          >
-            Logout
-          </button>
-        </form>
+        <LogoutButton />
       </div>
     </>
   );

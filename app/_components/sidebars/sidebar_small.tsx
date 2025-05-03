@@ -1,17 +1,10 @@
 import Logo from "@/app/assets/svgs/logo";
-import {
-  Stack,
-  Tags,
-  Response,
-  ChatScripts,
-  Logout,
-  Tokens,
-} from "../../assets/svgs";
+import { Stack, Tags, Response, ChatScripts, Tokens } from "../../assets/svgs";
 import Link from "next/link";
 import React from "react";
 import SidebarLinksSmall from "./sidebarlinks_small";
-import { signOutAction } from "@/app/actions";
 import FreeTokens from "@/app/_components/free_token";
+import LogoutIcon from "./logout_icon";
 
 export default function SidebarSmall() {
   return (
@@ -47,11 +40,7 @@ export default function SidebarSmall() {
           <FreeTokens />
         </div>
 
-        <form action={signOutAction}>
-          <button type="submit">
-            <Logout className="size-6 text-white" />
-          </button>
-        </form>
+        <LogoutIcon />
       </div>
     </>
   );

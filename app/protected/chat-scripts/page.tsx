@@ -4,7 +4,6 @@ import ChatScriptsDashboard from "@/app/_components/chat_scripts/chat_scripts_da
 import SearchBar from "@/app/_components/search-bar";
 import React from "react";
 import ChatScriptsList from "../../_components/chat_scripts/chat_scripts_list";
-import { getAuthUser } from "@/utils/supabase/users";
 
 export default async function page() {
   return (
