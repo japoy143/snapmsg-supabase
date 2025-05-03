@@ -115,8 +115,45 @@ export default function TagDashboard() {
   }, [statusState?.success]);
 
   //pending and error handlers
+
   if (isTagsPending) {
-    return <div>...Loading</div>;
+    return (
+      <DashboardCardsWrapper isCards="four-cards">
+        <DashboardCards className=" hidden md:flex md:col-span-2 animate-pulse">
+          <h1>
+            <span className=" bg-gray-50 text-transparent">Scripts title</span>
+          </h1>
+        </DashboardCards>
+
+        <DashboardCards className="col-span-4 md:col-span-2 animate-pulse">
+          <h1>
+            <span className=" bg-gray-50 text-transparent">Scripts title</span>
+          </h1>
+          <div>
+            <h1 className=" bg-gray-50 text-transparent">Scripts title</h1>
+          </div>
+          <h1>
+            <span className=" bg-gray-50 text-transparent">Scripts title</span>
+          </h1>
+          <div className=" flex-1 w-full h-full rounded-lg p-2 ">
+            <h1 className=" bg-gray-50 text-transparent">Scripts title</h1>
+          </div>
+          <div className=" flex items-center justify-end space-x-4 mt-2">
+            <h1>
+              <span className=" bg-gray-50 text-transparent">
+                Scripts title
+              </span>
+            </h1>
+
+            <h1>
+              <span className=" bg-gray-50 text-transparent">
+                Scripts title
+              </span>
+            </h1>
+          </div>
+        </DashboardCards>
+      </DashboardCardsWrapper>
+    );
   }
 
   if (isTagsError) {

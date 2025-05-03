@@ -47,8 +47,40 @@ export default function TagList() {
   const search = searchParams.get("search")?.toLowerCase() ?? "";
 
   //pending and error handlers
+
   if (isTagsPending && isScriptPending) {
-    return <span>Loading...</span>;
+    return Array.from({ length: 5 }).map((_, i) => (
+      <div
+        key={i}
+        className="relative w-full grid grid-cols-7 text-left border-2 border-gray/40 rounded-md mb-2 animate-pulse"
+      >
+        <div className="col-span-3 h-[140px] p-2 border-r-2 border-gray/40">
+          <p>
+            <span className=" bg-gray-50 text-transparent">Tagname</span>
+          </p>
+        </div>
+        <div className="col-span-3 flex flex-wrap space-x-2 p-2 border-r-2 border-gray/40">
+          <h1>
+            <span className=" bg-gray-50 text-transparent">
+              Tagname Tagname
+            </span>
+          </h1>
+
+          <h1>
+            <span className=" bg-gray-50 text-transparent">
+              Tagname Tagname
+            </span>
+          </h1>
+        </div>
+        <div className="col-span-1  flex  justify-end p-2">
+          <h1>
+            <span className=" bg-gray-50 text-transparent">
+              Tagname Tagname
+            </span>
+          </h1>
+        </div>
+      </div>
+    ));
   }
 
   if (isTagsError && isScriptError) {

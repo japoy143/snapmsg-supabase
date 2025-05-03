@@ -81,7 +81,44 @@ export default function ChatScriptsList() {
   }, []);
 
   if (isTagPending || isScriptPending) {
-    return <div>...Loading</div>;
+    return Array.from({ length: 5 }).map((_, i) => (
+      <div
+        className=" animate-pulse relative w-full  grid grid-cols-7  text-left border-2 border-gray/40 rounded-md  mb-2"
+        key={i}
+      >
+        <div className=" col-span-2 h-[140px] p-2 border-r-2 border-gray/40 ">
+          <p>
+            <span className=" text-transparent bg-gray-50">Scripts title</span>
+          </p>
+        </div>
+        <div className=" col-span-3 flex flex-wrap space-x-2 p-2 border-r-2 border-gray/40">
+          <p>
+            <span className=" text-transparent bg-gray-50">
+              Scripts title title
+            </span>
+          </p>
+        </div>
+        <div className="  col-span-2 flex flex-col p-2">
+          <div className=" flex justify-end">
+            <div className=" cursor-pointer">
+              <p>
+                <span className=" text-transparent bg-gray-50">
+                  Scripts title title
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div className=" flex-1  space-x-2  flex-wrap">
+            <p>
+              <span className=" text-transparent bg-gray-50">
+                Scripts title title
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    ));
   }
 
   if (isTagError || isScriptError) {

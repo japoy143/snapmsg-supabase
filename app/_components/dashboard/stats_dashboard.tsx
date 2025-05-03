@@ -57,7 +57,86 @@ export default function StatsDashboard() {
   });
 
   if (isScriptPending || isTagPending || isUserPending) {
-    return <p>Loading ...</p>;
+    return (
+      <div className=" flex-1 w-full h-full p-4 flex flex-col gap-4    animate-pulse">
+        <DashboardCardsWrapper>
+          <DashboardCards className=" space-y-2">
+            <h1 className=" text-center text-4xl font-medium  bg-gray-50 text-transparent inline-block ">
+              sample
+            </h1>
+            <h1 className=" text-center text-4xl font-medium ">
+              <span className=" bg-gray-50 text-transparent inline-block">
+                sample
+              </span>
+            </h1>
+          </DashboardCards>
+
+          <DashboardCards className=" space-y-2">
+            <h1 className=" text-center text-4xl font-medium  bg-gray-50 text-transparent inline-block ">
+              sample
+            </h1>
+
+            <h1 className=" text-center text-4xl font-medium ">
+              <span className=" bg-gray-50 text-transparent inline-block">
+                sample
+              </span>
+            </h1>
+          </DashboardCards>
+
+          <DashboardCards className=" space-y-2">
+            <h1 className=" text-center text-4xl font-medium  bg-gray-50 text-transparent inline-block ">
+              sample
+            </h1>
+            <h1 className=" text-center text-4xl font-medium ">
+              <span className=" bg-gray-50 text-transparent inline-block">
+                sample
+              </span>
+            </h1>
+          </DashboardCards>
+        </DashboardCardsWrapper>
+
+        <DashboardCard>
+          <h1 className=" animate-pulse">
+            <span className=" bg-gray-50 text-transparent inline-block">
+              Latest Chat Scripts
+            </span>
+          </h1>
+          <div className=" flex-1 w-full ">
+            <div className=" w-full  grid grid-cols-4 p-2 text-left ">
+              <div className=" col-span-2">
+                <h1 className=" animate-pulse">
+                  <span className=" bg-gray-50 text-transparent inline-block">
+                    Latest Chat Scripts Scripts
+                  </span>
+                </h1>
+              </div>
+              <div className=" col-span-2">
+                <h1 className=" animate-pulse">
+                  <span className=" bg-gray-50 text-transparent inline-block">
+                    Latest Chat Scripts Scripts
+                  </span>
+                </h1>
+              </div>
+            </div>
+          </div>
+
+          <h1 className=" animate-pulse">
+            <span className=" bg-gray-50 text-transparent inline-block">
+              Latest Chat
+            </span>
+          </h1>
+          <div className=" flex-1 w-full ">
+            <div className=" w-full  grid grid-cols-2 p-2 text-left ">
+              <h1 className=" animate-pulse">
+                <span className=" bg-gray-50 text-transparent inline-block">
+                  Latest Chat Scripts
+                </span>
+              </h1>
+            </div>
+          </div>
+        </DashboardCard>
+      </div>
+    );
   }
 
   return (

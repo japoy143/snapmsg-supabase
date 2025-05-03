@@ -50,7 +50,7 @@ export default function ChatScriptsDashboard() {
     error: tagError,
   } = useQuery({
     queryKey: ["taglist"],
-    queryFn: () => getAllTags(userId ?? ''),
+    queryFn: () => getAllTags(userId ?? ""),
     enabled: !!userId,
   });
 
@@ -130,7 +130,67 @@ export default function ChatScriptsDashboard() {
   }, [statusState?.success]);
 
   if (isTagPending) {
-    return <div>...Loading</div>;
+    return (
+      <DashboardCardsWrapper isCards="card">
+        <DashboardCards>
+          <form className="w-full h-full grid grid-cols-2 gap-2 animate-pulse">
+            <div className=" flex h-full w-full flex-col">
+              <h1 className=" font-medium">
+                <span className=" bg-gray-50 text-transparent">
+                  Script Title
+                </span>
+              </h1>
+              <h1 className=" font-medium">
+                <span className=" bg-gray-50 text-transparent">
+                  Lorem ipsum Lorem ipsum Lorem ipsum
+                </span>
+              </h1>
+              <h1 className=" font-medium">
+                <span className=" bg-gray-50 text-transparent">
+                  Add Scripts
+                </span>
+              </h1>
+              <div className="w-full h-1/4 lg:h-1/2  bg-gray-50  rounded-md"></div>
+            </div>
+
+            <div className="w-full h-full flex flex-col gap-2">
+              <div className="h-1/3 flex flex-col">
+                <h1 className=" font-medium">
+                  <span className=" bg-gray-50 text-transparent">
+                    Associate Tag
+                  </span>
+                </h1>
+                <h1 className=" font-medium bg-gray-50 text-transparent">
+                  select tag
+                </h1>
+              </div>
+              {/* hidden associated inputs */}
+              <h1 className=" font-medium">
+                <span className=" bg-gray-50 text-transparent">
+                  Associate Tag
+                </span>
+              </h1>
+              {/* Associated tags */}
+              <div className="h-[60px] flex  flex-wrap  bg-gray-50  rounded-md p-2   gap-4"></div>
+
+              <div className="flex justify-end space-x-4">
+                <h1 className=" font-medium">
+                  <span className=" bg-gray-50 text-transparent">
+                    Associate Tag
+                  </span>
+                </h1>
+
+                <h1 className=" font-medium">
+                  <span className=" bg-gray-50 text-transparent">
+                    Associate Tag
+                  </span>
+                </h1>
+              </div>
+            </div>
+          </form>
+        </DashboardCards>
+      </DashboardCardsWrapper>
+    );
   }
 
   if (isTagError) {

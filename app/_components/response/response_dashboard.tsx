@@ -63,7 +63,58 @@ export default function ResponseDashboard() {
   }
 
   if (isPending) {
-    return <p>...Loading</p>;
+    return (
+      <DashboardCardsWrapper isCards="card">
+        <div className=" p-4 bg-[var(--cards-background-color)] rounded-md shadow-md animate-pulse">
+          <div className="w-full">
+            <h1 className="font-medium text-lg">
+              <span className=" text-transparent bg-gray-50">API URL</span>
+            </h1>
+            <div className="flex w-full gap-1 items-center">
+              <h1 className="font-medium text-lg text-transparent bg-gray-50 w-full">
+                API URL
+              </h1>
+              <div className=" max-h-[60px]">
+                <h1 className="font-medium text-lg">
+                  <span className=" text-transparent bg-gray-50">button</span>
+                </h1>
+              </div>
+            </div>
+          </div>
+          <div className="w-full">
+            <h1 className="font-medium text-lg">
+              <span className=" text-transparent bg-gray-50">API URL</span>
+            </h1>
+            <div className="flex w-full gap-1 items-center">
+              <h1 className="font-medium text-lg text-transparent bg-gray-50 w-full">
+                API URL
+              </h1>
+              <div className=" max-h-[60px]">
+                <h1 className="font-medium text-lg">
+                  <span className=" text-transparent bg-gray-50">button</span>
+                </h1>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-full">
+            <h1 className="font-medium text-lg">
+              <span className=" text-transparent bg-gray-50">API URL</span>
+            </h1>
+            <div className="flex w-full gap-1 items-center">
+              <h1 className="font-medium text-lg text-transparent bg-gray-50 w-full">
+                API URL
+              </h1>
+              <div className=" max-h-[60px]">
+                <h1 className="font-medium text-lg">
+                  <span className=" text-transparent bg-gray-50">button</span>
+                </h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </DashboardCardsWrapper>
+    );
   }
 
   return (

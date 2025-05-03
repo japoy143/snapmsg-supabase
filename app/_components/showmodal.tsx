@@ -20,7 +20,7 @@ export default function ShowModal() {
     success?: boolean;
     error?: errorField;
   }>();
-  const [isCompanySet, setIsCompanySet] = useState(false);
+  const [isCompanySet, setIsCompanySet] = useState(true);
   function close() {
     setIsCompanySet(true);
   }
